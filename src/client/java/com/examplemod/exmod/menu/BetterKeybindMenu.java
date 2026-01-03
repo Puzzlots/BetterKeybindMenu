@@ -1,0 +1,311 @@
+package com.examplemod.exmod.menu;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.utils.ScreenUtils;
+import finalforeach.cosmicreach.gamestates.GameState;
+import finalforeach.cosmicreach.lang.Lang;
+import finalforeach.cosmicreach.settings.ControlSettings;
+import finalforeach.cosmicreach.settings.Controls;
+import finalforeach.cosmicreach.settings.GraphicsSettings;
+import finalforeach.cosmicreach.settings.Keybind;
+import finalforeach.cosmicreach.ui.GameStyles;
+import finalforeach.cosmicreach.util.Identifier;
+import finalforeach.cosmicreach.world.Sky;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.examplemod.exmod.menu.CategoryType.*;
+
+public class BetterKeybindMenu extends GameState {
+
+    boolean isControllerTab;
+    private Camera starCamera;
+
+    private final static boolean DEBUG = true;
+
+    TextField searchBar;
+    CategoryButton activeCategoryButton;
+
+    Map<Identifier, Category> categories = new HashMap<>();
+
+    /// tables ///
+    Table baseTable = new Table();
+    Table keyboardCategoryTable = new Table();
+    Table controllerCategoryTable = new Table();
+
+    Table keyboardKeybindsContainer = new Table();
+    Table controllerKeybindsContainer = new Table();
+
+    /// buttons ///
+
+    LangButton keyboardTabButton;
+    LangButton controllerTabButton;
+
+    Color activeColor = Color.GOLD;
+    Color inactiveColor = Color.WHITE;
+
+
+    public static Identifier CAT_MOVEMENT = Identifier.of("base", "movement");
+    public static Identifier CAT_INTERACTIONS = Identifier.of("base", "interactions");
+    public static Identifier CAT_INVENTORY = Identifier.of("base", "inventory");
+    public static Identifier CAT_DEBUG = Identifier.of("base", "debug");
+    public static Identifier CAT_OTHER = Identifier.of("base", "other");
+
+    public static Identifier test = Identifier.of("BetterKeybindMenu", "other");
+
+    public void addCategory(CategoryType type, Identifier id) {
+        categories.put(id, new Category(type, id));
+    }
+
+    public void addKeybind(Identifier categoriesId, Identifier id, Keybind keybind) {
+        categories.get(categoriesId).addKeybind(new KeybindEntry(id, keybind));
+    }
+
+    public void initCategory() {
+        addCategory(keyboard, CAT_MOVEMENT);
+        addCategory(keyboard, CAT_INTERACTIONS);
+        addCategory(keyboard, CAT_INVENTORY);
+        addCategory(controller, CAT_DEBUG);
+        addCategory(keyboard, CAT_OTHER);
+        addCategory(both, test);
+    }
+
+    public void initKeybinds() {
+        addKeybind(CAT_MOVEMENT, Identifier.of("base", "Forward"), ControlSettings.keyForward);
+        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
+    }
+
+    private void setControllerTab(boolean controller) {
+        isControllerTab = controller;
+
+        keyboardTabButton.setTextColor(controller ? inactiveColor : activeColor);
+        controllerTabButton.setTextColor(controller ? activeColor : inactiveColor);
+
+        keyboardCategoryTable.getParent().setVisible(!controller);
+        controllerCategoryTable.getParent().setVisible(controller);
+
+        hideInactiveKeybinds();
+
+        if (activeCategoryButton != null) {
+            activeCategoryButton.deselect();
+            activeCategoryButton = null;
+        }
+
+        ((Stack) keyboardCategoryTable.getParent().getParent()).layout();
+    }
+
+    private void hideInactiveKeybinds() {
+        keyboardKeybindsContainer.setVisible(!isControllerTab);
+        controllerKeybindsContainer.setVisible(isControllerTab);
+
+        if (isControllerTab) {
+            keyboardKeybindsContainer.getParent().setTouchable(Touchable.disabled);
+            controllerKeybindsContainer.getParent().setTouchable(Touchable.enabled);
+        } else {
+            keyboardKeybindsContainer.getParent().setTouchable(Touchable.enabled);
+            controllerKeybindsContainer.getParent().setTouchable(Touchable.disabled);
+        }
+
+    }
+
+    private void selectCategory(CategoryButton button, Table keybindTable) {
+        if (activeCategoryButton != null) activeCategoryButton.deselect();
+
+        activeCategoryButton = button;
+        button.select();
+
+        if (isControllerTab) {
+            controllerKeybindsContainer.clearChildren();
+            controllerKeybindsContainer.add(keybindTable).growX().row();
+        } else {
+            keyboardKeybindsContainer.clearChildren();
+            keyboardKeybindsContainer.add(keybindTable).growX().row();
+        }
+    }
+
+    @Override
+    public void create() {
+        super.create();
+        this.stage.clear();
+        this.starCamera = new PerspectiveCamera(GraphicsSettings.fieldOfView.getValue(), (float)Gdx.graphics.getWidth(), (float)Gdx.graphics.getHeight());
+        this.starCamera.near = 0.1F;
+        this.starCamera.far = 2500.0F;
+
+        keyboardKeybindsContainer.setName("keyboardKeybindsContainer");
+        controllerKeybindsContainer.setName("controllerKeybindsContainer");
+
+        initCategory();
+        initKeybinds();
+
+        baseTable.clear();
+        baseTable.setFillParent(true);
+        baseTable.setDebug(DEBUG);
+        this.stage.addActor(baseTable);
+
+        // header //////////
+
+        Table header = new Table();
+        this.searchBar = new TextField(Lang.get("keybindSelectionSearch"), GameStyles.textstyle);
+
+        keyboardTabButton = new LangButton(Lang.get("keyboard_tab")) {
+            public void onClick() {
+                setControllerTab(false);
+            }
+        };
+
+        controllerTabButton = new LangButton(Lang.get("controller_tab")) {
+            public void onClick() {
+                setControllerTab(true);
+            }
+        };
+
+        keyboardTabButton.setTextColor(isControllerTab ? inactiveColor : activeColor);
+        controllerTabButton.setTextColor(isControllerTab ? activeColor : inactiveColor);
+
+        header.add(searchBar).pad(10).minWidth(200).prefWidth(500).height(50).growX();
+        header.add(keyboardTabButton).pad(10).minWidth(180).prefWidth(250).maxWidth(250).height(50);
+        header.add(controllerTabButton).pad(10).minWidth(180).prefWidth(250).maxWidth(250).height(50);
+        header.setClip(true);
+        header.setDebug(DEBUG);
+
+        baseTable.add(header).growX().top().pad(10);
+        baseTable.row();
+
+        // categories //
+
+        Table content = new Table();
+        baseTable.add(content).grow().padTop(5);
+        content.setDebug(DEBUG);
+
+        keyboardCategoryTable.top().setDebug(DEBUG);
+        controllerCategoryTable.top().setDebug(DEBUG);
+
+        ScrollPane keyboardCategoryScroll = new ScrollPane(keyboardCategoryTable);
+        ScrollPane controllerCategoryScroll = new ScrollPane(controllerCategoryTable);
+
+        keyboardCategoryTable.defaults().growX().top();
+        controllerCategoryTable.defaults().growX().top();
+
+
+        keyboardCategoryScroll.setFadeScrollBars(false);
+        controllerCategoryScroll.setFadeScrollBars(false);
+        keyboardCategoryScroll.setScrollingDisabled(true, false);
+        controllerCategoryScroll.setScrollingDisabled(true, false);
+
+
+        Stack categoryStack = new Stack();
+        categoryStack.add(keyboardCategoryScroll);
+        categoryStack.add(controllerCategoryScroll);
+
+        content.add(categoryStack)
+                .growY()
+                .top()
+                .left()
+                .width(250)
+                .pad(5);
+
+
+        // ///////////// keybinds /////////////////////
+
+        ScrollPane keyboardKeybindScroll = new ScrollPane(keyboardKeybindsContainer);
+        ScrollPane controllerKeybindScroll = new ScrollPane(controllerKeybindsContainer);
+
+        keyboardKeybindScroll.setFadeScrollBars(false);
+        controllerKeybindScroll.setFadeScrollBars(false);
+        keyboardKeybindScroll.setScrollingDisabled(true, false);
+        controllerKeybindScroll.setScrollingDisabled(true, false);
+
+        Stack keybindStack = new Stack();
+        keybindStack.add(keyboardKeybindScroll);
+        keybindStack.add(controllerKeybindScroll);
+
+        content.add(keybindStack).growX().top().pad(5);
+
+        activeCategoryButton = null;
+
+        for (Category category : categories.values()) {
+            Table keyboardKeybinds = new Table();
+            Table controllerKeybinds = new Table();
+
+            for (KeybindEntry entry : category.keybinds) {
+                String name = Lang.get(entry.id().toString());
+                TextField keyboardField = new TextField(name, GameStyles.textstyle);
+                TextField controllerField = new TextField(name, GameStyles.textstyle);
+
+                keyboardKeybinds.add(keyboardField).growX().height(40).pad(5).row();
+                controllerKeybinds.add(controllerField).growX().height(40).pad(5).row();
+            }
+
+
+            keyboardKeybinds.setDebug(DEBUG);
+            controllerKeybinds.setDebug(DEBUG);
+
+            CategoryButton keyboardButton = new CategoryButton(category) {
+                @Override public void onClick() {
+                    selectCategory(this, keyboardKeybinds);
+                }
+            };
+
+            CategoryButton controllerButton = new CategoryButton(category) {
+                @Override public void onClick() {
+                    selectCategory(this, controllerKeybinds);
+                }
+            };
+
+            switch (category.getType()) {
+                case keyboard -> keyboardCategoryTable.add(keyboardButton).width(250.0F).height(50.0F).pad(5.0F).row();
+                case controller -> controllerCategoryTable.add(controllerButton).width(250.0F).height(50.0F).pad(5.0F).row();
+                case both -> {
+                    keyboardCategoryTable.add(keyboardButton).width(250.0F).height(50.0F).pad(5.0F).row();
+                    controllerCategoryTable.add(controllerButton).width(250.0F).height(50.0F).pad(5.0F).row();
+                }
+            }
+        }
+
+        Gdx.input.setInputProcessor(this.stage);
+        setControllerTab(Controls.controllers.size > 0);
+    }
+
+    @Override
+    public void update(float deltaTime) {
+        super.update(deltaTime);
+    }
+
+    public void switchAwayTo(GameState gameState) {
+        super.switchAwayTo(gameState);
+        Gdx.input.setInputProcessor(null);
+    }
+
+    public void onSwitchTo() {
+        super.onSwitchTo();
+        Gdx.input.setInputProcessor(this.stage);
+    }
+
+    @Override
+    public void render() {
+        super.render();
+        this.stage.act();
+        ScreenUtils.clear(0, 0, 0F, 1.0F, true);
+
+        Gdx.gl.glEnable(3042);
+        Gdx.gl.glBlendFunc(770, 771);
+        Gdx.gl.glDepthFunc(513);
+        Gdx.gl.glEnable(2929);
+        Gdx.gl.glDisable(2884);
+        Sky.SPACE_DAY.drawSky(this.starCamera);
+        this.starCamera.rotate(Vector3.Z, Gdx.graphics.getDeltaTime() * 0.25F);
+        this.stage.draw();
+        Gdx.gl.glCullFace(1029);
+        Gdx.gl.glEnable(2884);
+    }
+}
