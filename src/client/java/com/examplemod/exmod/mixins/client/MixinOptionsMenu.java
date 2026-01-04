@@ -10,6 +10,6 @@ public class MixinOptionsMenu extends CRButton {
     @Override
     public void onClick() {
         super.onClick();
-        GameState.switchToGameState(new BetterKeybindMenu());
+           GameState.switchToGameState(new BetterKeybindMenu());
     }
 }

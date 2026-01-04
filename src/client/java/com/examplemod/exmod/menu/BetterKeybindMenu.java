@@ -10,8 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.ScreenUtils;
 import finalforeach.cosmicreach.gamestates.GameState;
+import finalforeach.cosmicreach.gamestates.OptionsMenu;
 import finalforeach.cosmicreach.lang.Lang;
 import finalforeach.cosmicreach.settings.ControlSettings;
 import finalforeach.cosmicreach.settings.Controls;
@@ -20,9 +22,6 @@ import finalforeach.cosmicreach.settings.Keybind;
 import finalforeach.cosmicreach.ui.GameStyles;
 import finalforeach.cosmicreach.util.Identifier;
 import finalforeach.cosmicreach.world.Sky;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.examplemod.exmod.menu.CategoryType.*;
 
@@ -36,7 +35,7 @@ public class BetterKeybindMenu extends GameState {
     TextField searchBar;
     CategoryButton activeCategoryButton;
 
-    Map<Identifier, Category> categories = new HashMap<>();
+    OrderedMap<Identifier, Category> categories = new OrderedMap<>();
 
     /// tables ///
     Table baseTable = new Table();
@@ -83,6 +82,16 @@ public class BetterKeybindMenu extends GameState {
     public void initKeybinds() {
         addKeybind(CAT_MOVEMENT, Identifier.of("base", "Forward"), ControlSettings.keyForward);
         addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
+        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
+        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
+        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
+        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
+        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
+        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
+        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
+        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
+        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
+        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
     }
 
     private void setControllerTab(boolean controller) {
@@ -97,6 +106,7 @@ public class BetterKeybindMenu extends GameState {
         hideInactiveKeybinds();
 
         if (activeCategoryButton != null) {
+            activeCategoryButton.setTextColor(inactiveColor);
             activeCategoryButton.deselect();
             activeCategoryButton = null;
         }
@@ -119,9 +129,13 @@ public class BetterKeybindMenu extends GameState {
     }
 
     private void selectCategory(CategoryButton button, Table keybindTable) {
-        if (activeCategoryButton != null) activeCategoryButton.deselect();
+        if (activeCategoryButton != null) {
+            activeCategoryButton.deselect();
+            activeCategoryButton.setTextColor(inactiveColor);
+        }
 
         activeCategoryButton = button;
+        activeCategoryButton.setTextColor(activeColor);
         button.select();
 
         if (isControllerTab) {
@@ -172,9 +186,9 @@ public class BetterKeybindMenu extends GameState {
         keyboardTabButton.setTextColor(isControllerTab ? inactiveColor : activeColor);
         controllerTabButton.setTextColor(isControllerTab ? activeColor : inactiveColor);
 
-        header.add(searchBar).pad(10).minWidth(200).prefWidth(500).height(50).growX();
-        header.add(keyboardTabButton).pad(10).minWidth(180).prefWidth(250).maxWidth(250).height(50);
-        header.add(controllerTabButton).pad(10).minWidth(180).prefWidth(250).maxWidth(250).height(50);
+        header.add(searchBar).minWidth(200).prefWidth(500).height(50).growX();
+        header.add(keyboardTabButton).padLeft(5).minWidth(180).prefWidth(250).maxWidth(250).height(50);
+        header.add(controllerTabButton).padLeft(5).minWidth(180).prefWidth(250).maxWidth(250).height(50);
         header.setClip(true);
         header.setDebug(DEBUG);
 
@@ -184,8 +198,10 @@ public class BetterKeybindMenu extends GameState {
         // categories //
 
         Table content = new Table();
-        baseTable.add(content).grow().padTop(5);
+        baseTable.add(content).grow();
         content.setDebug(DEBUG);
+
+        Table rightSideContent = new Table();
 
         keyboardCategoryTable.top().setDebug(DEBUG);
         controllerCategoryTable.top().setDebug(DEBUG);
@@ -212,7 +228,7 @@ public class BetterKeybindMenu extends GameState {
                 .top()
                 .left()
                 .width(250)
-                .pad(5);
+                .pad(10);
 
 
         // ///////////// keybinds /////////////////////
@@ -229,7 +245,10 @@ public class BetterKeybindMenu extends GameState {
         keybindStack.add(keyboardKeybindScroll);
         keybindStack.add(controllerKeybindScroll);
 
-        content.add(keybindStack).growX().top().pad(5);
+        rightSideContent.setDebug(DEBUG);
+        rightSideContent.defaults().growX();
+        rightSideContent.top();
+        rightSideContent.add(keybindStack).growX().top().padTop(10).padRight(10).padBottom(10);
 
         activeCategoryButton = null;
 
@@ -238,12 +257,16 @@ public class BetterKeybindMenu extends GameState {
             Table controllerKeybinds = new Table();
 
             for (KeybindEntry entry : category.keybinds) {
-                String name = Lang.get(entry.id().toString());
-                TextField keyboardField = new TextField(name, GameStyles.textstyle);
-                TextField controllerField = new TextField(name, GameStyles.textstyle);
+//                String name = Lang.get(entry.id().toString());
+//                TextField keyboardField = new TextField(name, GameStyles.textstyle);
+//                TextField controllerField = new TextField(name, GameStyles.textstyle);
 
-                keyboardKeybinds.add(keyboardField).growX().height(40).pad(5).row();
-                controllerKeybinds.add(controllerField).growX().height(40).pad(5).row();
+                KeybindButton keyboardButton = new KeybindButton(entry);
+                KeybindButton controllerButton = new KeybindButton(entry);
+
+                //TODO make Typed
+                keyboardKeybinds.add(keyboardButton).growX().height(40).padBottom(5).row();
+                controllerKeybinds.add(controllerButton).growX().height(40).padBottom(5).row();
             }
 
 
@@ -263,14 +286,45 @@ public class BetterKeybindMenu extends GameState {
             };
 
             switch (category.getType()) {
-                case keyboard -> keyboardCategoryTable.add(keyboardButton).width(250.0F).height(50.0F).pad(5.0F).row();
-                case controller -> controllerCategoryTable.add(controllerButton).width(250.0F).height(50.0F).pad(5.0F).row();
+                case keyboard -> keyboardCategoryTable.add(keyboardButton).width(250).height(50).padBottom(5).row();
+                case controller -> controllerCategoryTable.add(controllerButton).width(250).height(50).padBottom(5).row();
                 case both -> {
-                    keyboardCategoryTable.add(keyboardButton).width(250.0F).height(50.0F).pad(5.0F).row();
-                    controllerCategoryTable.add(controllerButton).width(250.0F).height(50.0F).pad(5.0F).row();
+                    keyboardCategoryTable.add(keyboardButton).width(250).height(50).padBottom(5).row();
+                    controllerCategoryTable.add(controllerButton).width(250).height(50).padBottom(5).row();
                 }
             }
         }
+
+        // bottm buttons /////
+        Table bottomButtons = new Table();
+        bottomButtons.setDebug(DEBUG);
+
+        LangButton doneButton = new LangButton(Lang.get("done")) {
+            public void onClick() {
+                GameState.switchToGameState(new OptionsMenu(currentGameState));
+            }
+        };
+
+        bottomButtons.defaults().growX();
+        bottomButtons.add(doneButton)
+                .right()
+                .padLeft(5)
+                .width(250)
+                .height(50);
+
+
+        rightSideContent.row();
+        rightSideContent.add().expandY();
+        rightSideContent.row();
+
+        rightSideContent.add(bottomButtons)
+                .bottom()
+                .right()
+                .expandX()
+                .padRight(10)
+                .padBottom(10);
+
+        content.add(rightSideContent).grow();
 
         Gdx.input.setInputProcessor(this.stage);
         setControllerTab(Controls.controllers.size > 0);

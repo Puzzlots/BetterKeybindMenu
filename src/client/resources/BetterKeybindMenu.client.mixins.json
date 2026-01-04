@@ -4,6 +4,7 @@
   "package": "com.examplemod.exmod.mixins.client",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "MixinGameAssetLoader",
     "MixinMainMenu",
     "MixinOptionsMenu"
   ],

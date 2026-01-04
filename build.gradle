@@ -33,19 +33,41 @@ dependencies {
 
 processClientResources {
     def projectProperties = [
-            "p_name": p_name,
-            "p_version": ((String)version).contains(".") ? version : "0.0.0",
-            "p_desc": p_desc,
-
-            "p_id": p_id,
-            "p_group": p_group,
-            "p_author": p_author
+            "p_name"   : p_name,
+            "p_version": ((String) version).contains(".") ? version : "0.0.0",
+            "p_desc"   : p_desc,
+            "p_id"     : p_id,
+            "p_group"  : p_group,
+            "p_author" : p_author
     ]
 
     inputs.properties projectProperties
 
-    filesMatching(["puzzle.mod.json"]) {
+    filesMatching("puzzle.mod.json") {
         expand projectProperties
+    }
+
+    doLast {
+        def resourcesDir = file("src/client/resources/assets/")
+        def outputDir = new File(destinationDir, "assets/" + p_id)
+        def assetsFile = new File(outputDir, "assets.txt")
+
+        outputDir.mkdirs()
+
+        def paths = []
+
+        resourcesDir.eachFileRecurse { file ->
+            if (file.isFile()) {
+                def relPath = resourcesDir.toPath()
+                        .relativize(file.toPath())
+                        .toString()
+                        .replace("\\", "/")
+
+                paths.add(relPath)
+            }
+        }
+
+        assetsFile.text = paths.join("\n")
     }
 }
 

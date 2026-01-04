@@ -1,0 +1,13 @@
+{
+  "base:other": "Other",
+  "base:interactions": "Interactions",
+  "base:movement": "Movement",
+  "base:inventory": "Inventory",
+
+  "base:Forward": "Move Forward",
+
+  "add these to game.json":"or wherever it doesnt really matter at the end of the day",
+  "keyboard_tab": "Keyboard",
+  "controller_tab": "Controller",
+  "keybindSelectionSearch": "Search Keybinds..."
+}
