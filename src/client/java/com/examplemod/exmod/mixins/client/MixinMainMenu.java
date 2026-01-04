@@ -1,5 +1,6 @@
 package com.examplemod.exmod.mixins.client;
 
+import com.examplemod.exmod.GetKeyNumMenu;
 import com.examplemod.exmod.menu.BetterKeybindMenu;
 import finalforeach.cosmicreach.gamestates.GameState;
 import finalforeach.cosmicreach.gamestates.MainMenu;
@@ -18,6 +19,7 @@ public class MixinMainMenu extends GameState{
 
         this.onCRFontUpdate();
         GameState.switchToGameState(new BetterKeybindMenu());
+//        GameState.switchToGameState(new GetKeyNumMenu());
     }
 
 }

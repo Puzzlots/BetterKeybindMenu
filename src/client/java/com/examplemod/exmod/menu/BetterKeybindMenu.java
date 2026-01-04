@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.examplemod.exmod.ui.widgets.KeybindWidget;
 import finalforeach.cosmicreach.gamestates.GameState;
 import finalforeach.cosmicreach.gamestates.OptionsMenu;
 import finalforeach.cosmicreach.lang.Lang;
@@ -261,12 +262,12 @@ public class BetterKeybindMenu extends GameState {
 //                TextField keyboardField = new TextField(name, GameStyles.textstyle);
 //                TextField controllerField = new TextField(name, GameStyles.textstyle);
 
-                KeybindButton keyboardButton = new KeybindButton(entry);
-                KeybindButton controllerButton = new KeybindButton(entry);
+                KeybindWidget keyboardButton = new KeybindWidget(entry);
+                KeybindWidget controllerButton = new KeybindWidget(entry);
 
                 //TODO make Typed
-                keyboardKeybinds.add(keyboardButton).growX().height(40).padBottom(5).row();
-                controllerKeybinds.add(controllerButton).growX().height(40).padBottom(5).row();
+                keyboardKeybinds.add(keyboardButton).growX().height(70).padBottom(5).row();
+                controllerKeybinds.add(controllerButton).growX().height(70).padBottom(5).row();
             }
 
 
