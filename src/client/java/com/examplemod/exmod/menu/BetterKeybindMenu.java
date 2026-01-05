@@ -86,10 +86,10 @@ public class BetterKeybindMenu extends GameState {
     public void initKeybinds() {
         addKeybind(CAT_MOVEMENT, Identifier.of("base", "Forward"), ControlSettings.keyForward);
         addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
-        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
-        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
-        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
-        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
+        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyChat);
+        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyAttackBreak);
+        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyCrouch);
+        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyChangePerspective);
         addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
         addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
         addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
@@ -116,6 +116,7 @@ public class BetterKeybindMenu extends GameState {
         }
 
         ((Stack) keyboardCategoryTable.getParent().getParent()).layout();
+        baseTable.setDebug(DEBUG, true);
     }
 
     private void hideInactiveKeybinds() {
@@ -129,7 +130,7 @@ public class BetterKeybindMenu extends GameState {
             keyboardKeybindsContainer.getParent().setTouchable(Touchable.enabled);
             controllerKeybindsContainer.getParent().setTouchable(Touchable.disabled);
         }
-
+        baseTable.setDebug(DEBUG, true);
     }
 
     private void selectCategory(CategoryButton button, Table keybindTable) {
@@ -145,6 +146,7 @@ public class BetterKeybindMenu extends GameState {
         if (isControllerTab) {
             controllerKeybindsContainer.clearChildren();
             controllerKeybindsContainer.add(keybindTable).growX().row();
+            controllerKeybindsContainer.add().growY();
 
             controllerKeybindsContainer.invalidateHierarchy();
             controllerKeybindScroll.layout();
@@ -152,11 +154,13 @@ public class BetterKeybindMenu extends GameState {
         } else {
             keyboardKeybindsContainer.clearChildren();
             keyboardKeybindsContainer.add(keybindTable).growX().row();
+            keyboardKeybindsContainer.add().growY();
 
             keyboardKeybindsContainer.invalidateHierarchy();
             keyboardKeybindScroll.layout();
             keyboardKeybindScroll.setScrollY(0);
         }
+        baseTable.setDebug(DEBUG, true);
     }
 
 
@@ -176,7 +180,6 @@ public class BetterKeybindMenu extends GameState {
 
         baseTable.clear();
         baseTable.setFillParent(true);
-        baseTable.setDebug(DEBUG);
         this.stage.addActor(baseTable);
 
         // header //////////
@@ -203,7 +206,6 @@ public class BetterKeybindMenu extends GameState {
         header.add(keyboardTabButton).padLeft(5).minWidth(180).prefWidth(250).maxWidth(250).height(50);
         header.add(controllerTabButton).padLeft(5).minWidth(180).prefWidth(250).maxWidth(250).height(50);
         header.setClip(true);
-        header.setDebug(DEBUG);
 
         baseTable.add(header).growX().top().pad(10);
         baseTable.row();
@@ -212,12 +214,11 @@ public class BetterKeybindMenu extends GameState {
 
         Table content = new Table();
         baseTable.add(content).grow();
-        content.setDebug(DEBUG);
 
         Table rightSideContent = new Table();
 
-        keyboardCategoryTable.top().setDebug(DEBUG);
-        controllerCategoryTable.top().setDebug(DEBUG);
+        keyboardCategoryTable.top();
+        controllerCategoryTable.top();
 
         ScrollPane keyboardCategoryScroll = new ScrollPane(keyboardCategoryTable);
         ScrollPane controllerCategoryScroll = new ScrollPane(controllerCategoryTable);
@@ -258,7 +259,6 @@ public class BetterKeybindMenu extends GameState {
         keybindStack.add(keyboardKeybindScroll);
         keybindStack.add(controllerKeybindScroll);
 
-        rightSideContent.setDebug(DEBUG);
         rightSideContent.defaults().growX();
         rightSideContent.top();
         rightSideContent.add(keybindStack).growX().top().padTop(10).padRight(10).padBottom(10);
@@ -276,17 +276,11 @@ public class BetterKeybindMenu extends GameState {
 
                 KeybindWidget keyboardButton = new KeybindWidget(entry);
                 KeybindWidget controllerButton = new KeybindWidget(entry);
-                keyboardKeybinds.setDebug(DEBUG);
-                controllerKeybinds.setDebug(DEBUG);
 
                 //TODO make Typed
                 keyboardKeybinds.add(keyboardButton).growX().height(70).padBottom(5).row();
                 controllerKeybinds.add(controllerButton).growX().height(70).padBottom(5).row();
             }
-
-
-            keyboardKeybinds.setDebug(DEBUG);
-            controllerKeybinds.setDebug(DEBUG);
 
             CategoryButton keyboardButton = new CategoryButton(category) {
                 @Override public void onClick() {
@@ -312,7 +306,6 @@ public class BetterKeybindMenu extends GameState {
 
         // bottm buttons /////
         Table bottomButtons = new Table();
-        bottomButtons.setDebug(DEBUG);
 
         LangButton doneButton = new LangButton(Lang.get("done")) {
             public void onClick() {
@@ -343,6 +336,7 @@ public class BetterKeybindMenu extends GameState {
 
         Gdx.input.setInputProcessor(this.stage);
         setControllerTab(Controls.controllers.size > 0);
+        baseTable.setDebug(DEBUG, true);
     }
 
     @Override
