@@ -31,7 +31,7 @@ public class BetterKeybindMenu extends GameState {
     boolean isControllerTab;
     private Camera starCamera;
 
-    private final static boolean DEBUG = true;
+    public final static boolean DEBUG = true;
 
     TextField searchBar;
     CategoryButton activeCategoryButton;
@@ -50,6 +50,9 @@ public class BetterKeybindMenu extends GameState {
 
     LangButton keyboardTabButton;
     LangButton controllerTabButton;
+
+    ScrollPane keyboardKeybindScroll;
+    ScrollPane controllerKeybindScroll;
 
     Color activeColor = Color.GOLD;
     Color inactiveColor = Color.WHITE;
@@ -142,11 +145,20 @@ public class BetterKeybindMenu extends GameState {
         if (isControllerTab) {
             controllerKeybindsContainer.clearChildren();
             controllerKeybindsContainer.add(keybindTable).growX().row();
+
+            controllerKeybindsContainer.invalidateHierarchy();
+            controllerKeybindScroll.layout();
+            controllerKeybindScroll.setScrollY(0);
         } else {
             keyboardKeybindsContainer.clearChildren();
             keyboardKeybindsContainer.add(keybindTable).growX().row();
+
+            keyboardKeybindsContainer.invalidateHierarchy();
+            keyboardKeybindScroll.layout();
+            keyboardKeybindScroll.setScrollY(0);
         }
     }
+
 
     @Override
     public void create() {
@@ -234,8 +246,8 @@ public class BetterKeybindMenu extends GameState {
 
         // ///////////// keybinds /////////////////////
 
-        ScrollPane keyboardKeybindScroll = new ScrollPane(keyboardKeybindsContainer);
-        ScrollPane controllerKeybindScroll = new ScrollPane(controllerKeybindsContainer);
+        keyboardKeybindScroll = new ScrollPane(keyboardKeybindsContainer);
+        controllerKeybindScroll = new ScrollPane(controllerKeybindsContainer);
 
         keyboardKeybindScroll.setFadeScrollBars(false);
         controllerKeybindScroll.setFadeScrollBars(false);
@@ -264,6 +276,8 @@ public class BetterKeybindMenu extends GameState {
 
                 KeybindWidget keyboardButton = new KeybindWidget(entry);
                 KeybindWidget controllerButton = new KeybindWidget(entry);
+                keyboardKeybinds.setDebug(DEBUG);
+                controllerKeybinds.setDebug(DEBUG);
 
                 //TODO make Typed
                 keyboardKeybinds.add(keyboardButton).growX().height(70).padBottom(5).row();
