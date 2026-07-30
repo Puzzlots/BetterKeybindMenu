@@ -1,6 +1,7 @@
-package com.examplemod.exmod.menu;
+package com.examplemod.exmod.menu.buttons;
 
-import finalforeach.cosmicreach.lang.Lang;
+import com.examplemod.exmod.menu.KeybindEntry;
+import finalforeach.cosmicreach.util.lang.Lang;
 
 public class KeybindButton extends LangButton {
 

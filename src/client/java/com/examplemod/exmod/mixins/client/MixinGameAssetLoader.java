@@ -6,10 +6,11 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import dev.puzzleshq.mod.api.IModContainer;
 import dev.puzzleshq.puzzleloader.loader.util.ModFinder;
-import finalforeach.cosmicreach.GameAssetLoader;
-import finalforeach.cosmicreach.io.SaveLocation;
+
 import finalforeach.cosmicreach.util.Identifier;
-import org.spongepowered.asm.mixin.Final;
+import finalforeach.cosmicreach.util.SaveLocation;
+import finalforeach.cosmicreach.util.assets.GameAssetLoader;
+import finalforeach.cosmicreach.util.assets.GameAssetLoaderUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -25,10 +26,6 @@ import static com.examplemod.exmod.Constants.clazzAssetList;
 
 @Mixin(GameAssetLoader.class)
 public abstract class MixinGameAssetLoader {
-
-    @Shadow
-    @Final
-    private static String[] defaultAssetList;
 
     @Shadow
     public static FileHandle loadAsset(Identifier fileName) {
@@ -56,10 +53,10 @@ public abstract class MixinGameAssetLoader {
      */
     @Overwrite
     public static void forEachAsset(String prefix, String extension, BiConsumer<String, FileHandle> assetConsumer, boolean includeDirectories) {
-        ObjectSet<Identifier> allPaths = new ObjectSet();
-        ObjectSet<Identifier> moddedPaths = new ObjectSet();
+        ObjectSet<Identifier> allPaths = new ObjectSet<>();
+        ObjectSet<Identifier> moddedPaths = new ObjectSet<>();
 
-        for(String assetPath : defaultAssetList) {
+        for(String assetPath : GameAssetLoaderUtils.defaultAssetList) {
             if (assetPath.startsWith("base/" + prefix.replaceFirst("base:", "")) && assetPath.endsWith(extension)) {
                 allPaths.add(Identifier.of("base", assetPath.replaceFirst("base/", "")));
             }
@@ -89,10 +86,10 @@ public abstract class MixinGameAssetLoader {
                 String var10000 = String.valueOf(modFolder);
                 String modPrefix = var10000 + "/" + postPrefix;
                 modPrefix = modPrefix.replace("\\", "/");
-                Array<FileHandle> assetList = new Array(Gdx.files.absolute(modPrefix).list());
+                Array<FileHandle> assetList = new Array<>(Gdx.files.absolute(modPrefix).list());
 
                 while(!assetList.isEmpty()) {
-                    FileHandle asset = (FileHandle)assetList.pop();
+                    FileHandle asset = assetList.pop();
                     String assetPath = asset.path().replace("\\", "/").replace(modAssetRoot, "");
                     if (assetPath.startsWith("/")) {
                         assetPath = assetPath.substring(1);
@@ -112,10 +109,8 @@ public abstract class MixinGameAssetLoader {
         }
 
         allPaths.addAll(moddedPaths);
-        ObjectSet.ObjectSetIterator var22 = allPaths.iterator();
 
-        while(var22.hasNext()) {
-            Identifier path = (Identifier)var22.next();
+        for (Identifier path : allPaths) {
             assetConsumer.accept(path.toString(), loadAsset(path));
         }
 

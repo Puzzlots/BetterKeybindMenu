@@ -9,10 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.examplemod.exmod.menu.KeybindEntry;
-import finalforeach.cosmicreach.lang.Lang;
-import finalforeach.cosmicreach.rendering.GameTexture;
 import finalforeach.cosmicreach.ui.widgets.CRButton;
 import finalforeach.cosmicreach.ui.widgets.CRLabel;
+import finalforeach.cosmicreach.util.assets.GameTexture;
+import finalforeach.cosmicreach.util.lang.Lang;
 
 public class KeybindWidget extends Stack {
     CRLabel label;

@@ -1,10 +1,8 @@
-package com.examplemod.exmod.menu;
+package com.examplemod.exmod.menu.buttons;
 
 
 import com.badlogic.gdx.graphics.Color;
 import finalforeach.cosmicreach.ui.widgets.CRButton;
-
-import static com.examplemod.exmod.menu.BetterKeybindMenu.*;
 
 /**
  * this is just the langButton as we need to set text colour at runtime

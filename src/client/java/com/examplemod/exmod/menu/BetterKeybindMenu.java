@@ -10,77 +10,70 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.examplemod.exmod.menu.buttons.CategoryButton;
+import com.examplemod.exmod.menu.buttons.LangButton;
 import com.examplemod.exmod.ui.widgets.KeybindWidget;
 import finalforeach.cosmicreach.gamestates.GameState;
 import finalforeach.cosmicreach.gamestates.OptionsMenu;
-import finalforeach.cosmicreach.lang.Lang;
 import finalforeach.cosmicreach.settings.ControlSettings;
 import finalforeach.cosmicreach.settings.Controls;
 import finalforeach.cosmicreach.settings.GraphicsSettings;
 import finalforeach.cosmicreach.settings.Keybind;
 import finalforeach.cosmicreach.ui.GameStyles;
 import finalforeach.cosmicreach.util.Identifier;
+import finalforeach.cosmicreach.util.lang.Lang;
 import finalforeach.cosmicreach.world.Sky;
-
-import static com.examplemod.exmod.menu.CategoryType.*;
 
 public class BetterKeybindMenu extends GameState {
 
-    boolean isControllerTab;
     private Camera starCamera;
 
     public final static boolean DEBUG = true;
 
     TextField searchBar;
-    CategoryButton activeCategoryButton;
 
-    OrderedMap<Identifier, Category> categories = new OrderedMap<>();
+    KeybindTabs keybindTabs = new KeybindTabs();
 
     /// tables ///
     Table baseTable = new Table();
-    Table keyboardCategoryTable = new Table();
-    Table controllerCategoryTable = new Table();
-
-    Table keyboardKeybindsContainer = new Table();
-    Table controllerKeybindsContainer = new Table();
+    Table categoryTable = new Table();
+    Table keybindTable = new Table();
+//    Table keybindsContainer = new Table();
 
     /// buttons ///
 
     LangButton keyboardTabButton;
     LangButton controllerTabButton;
 
-    ScrollPane keyboardKeybindScroll;
-    ScrollPane controllerKeybindScroll;
+    ScrollPane keybindScroll;
 
     Color activeColor = Color.GOLD;
     Color inactiveColor = Color.WHITE;
 
 
-    public static Identifier CAT_MOVEMENT = Identifier.of("base", "movement");
-    public static Identifier CAT_INTERACTIONS = Identifier.of("base", "interactions");
-    public static Identifier CAT_INVENTORY = Identifier.of("base", "inventory");
-    public static Identifier CAT_DEBUG = Identifier.of("base", "debug");
-    public static Identifier CAT_OTHER = Identifier.of("base", "other");
+    public static Category CAT_MOVEMENT = new Category("base", "movement");
+    public static Category CAT_INTERACTIONS = new Category("base", "interactions");
+    public static Category CAT_INVENTORY = new Category("base", "inventory");
+    public static Category CAT_DEBUG = new Category("base", "debug");
+    public static Category CAT_OTHER = new Category("base", "other");
 
-    public static Identifier test = Identifier.of("BetterKeybindMenu", "other");
+    public static Category test = new Category("BetterKeybindMenu", "other");
 
-    public void addCategory(CategoryType type, Identifier id) {
-        categories.put(id, new Category(type, id));
+
+    public void addKeybind(Category category, Identifier id, Keybind keybind) {
+        category.addKeybind(new KeybindEntry(id, keybind));
     }
 
-    public void addKeybind(Identifier categoriesId, Identifier id, Keybind keybind) {
-        categories.get(categoriesId).addKeybind(new KeybindEntry(id, keybind));
-    }
+    public void initCategories() {
+        keybindTabs.keyboard().addCategory(CAT_MOVEMENT);
+        keybindTabs.keyboard().addCategory(CAT_INTERACTIONS);
+        keybindTabs.keyboard().addCategory(CAT_INVENTORY);
+        keybindTabs.keyboard().addCategory(CAT_OTHER);
+        keybindTabs.keyboard().addCategory(test);
 
-    public void initCategory() {
-        addCategory(keyboard, CAT_MOVEMENT);
-        addCategory(keyboard, CAT_INTERACTIONS);
-        addCategory(keyboard, CAT_INVENTORY);
-        addCategory(controller, CAT_DEBUG);
-        addCategory(keyboard, CAT_OTHER);
-        addCategory(both, test);
+        keybindTabs.controller().addCategory(test);
+        keybindTabs.controller().addCategory(CAT_DEBUG);
     }
 
     public void initKeybinds() {
@@ -98,71 +91,38 @@ public class BetterKeybindMenu extends GameState {
         addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
     }
 
-    private void setControllerTab(boolean controller) {
-        isControllerTab = controller;
+    private void setTab(TabType tabType) {
+        boolean isControllerTab = tabType == TabType.controller;
+        KeybindTabs.activeTab = isControllerTab ? keybindTabs.controller() : keybindTabs.keyboard();
+        KeybindTabs.activeTab.setActiveCategoryIndex(0);
 
-        keyboardTabButton.setTextColor(controller ? inactiveColor : activeColor);
-        controllerTabButton.setTextColor(controller ? activeColor : inactiveColor);
+        categoryTable.clear();
+        for (Category category : KeybindTabs.activeTab.categories) {
+            CategoryButton button = new CategoryButton(category) {
+                @Override public void onClick() {
+                    selectCategory(category);
+                }
+            };
 
-        keyboardCategoryTable.getParent().setVisible(!controller);
-        controllerCategoryTable.getParent().setVisible(controller);
-
-        hideInactiveKeybinds();
-
-        if (activeCategoryButton != null) {
-            activeCategoryButton.setTextColor(inactiveColor);
-            activeCategoryButton.deselect();
-            activeCategoryButton = null;
+            categoryTable.add(button).width(250).height(50).padBottom(5).row();
         }
 
-        ((Stack) keyboardCategoryTable.getParent().getParent()).layout();
-        baseTable.setDebug(DEBUG, true);
+        keyboardTabButton.setTextColor(isControllerTab ? inactiveColor : activeColor);
+        controllerTabButton.setTextColor(isControllerTab ? activeColor : inactiveColor);
+
+        selectCategory(KeybindTabs.activeTab.activeCategory());
     }
 
-    private void hideInactiveKeybinds() {
-        keyboardKeybindsContainer.setVisible(!isControllerTab);
-        controllerKeybindsContainer.setVisible(isControllerTab);
-
-        if (isControllerTab) {
-            keyboardKeybindsContainer.getParent().setTouchable(Touchable.disabled);
-            controllerKeybindsContainer.getParent().setTouchable(Touchable.enabled);
-        } else {
-            keyboardKeybindsContainer.getParent().setTouchable(Touchable.enabled);
-            controllerKeybindsContainer.getParent().setTouchable(Touchable.disabled);
+    private void selectCategory(Category category) {
+        keybindTable.clear();
+        KeybindTabs.activeTab.setActiveCategory(category);
+        for (KeybindEntry entry : KeybindTabs.activeTab.activeCategory().keybinds()) {
+            KeybindWidget button = new KeybindWidget(entry);
+            keybindTable.add(button).growX().height(70).padBottom(5).row();
         }
+
         baseTable.setDebug(DEBUG, true);
     }
-
-    private void selectCategory(CategoryButton button, Table keybindTable) {
-        if (activeCategoryButton != null) {
-            activeCategoryButton.deselect();
-            activeCategoryButton.setTextColor(inactiveColor);
-        }
-
-        activeCategoryButton = button;
-        activeCategoryButton.setTextColor(activeColor);
-        button.select();
-
-        if (isControllerTab) {
-            controllerKeybindsContainer.clearChildren();
-            controllerKeybindsContainer.add(keybindTable).growX().row();
-            controllerKeybindsContainer.add().growY();
-
-            controllerKeybindsContainer.invalidateHierarchy();
-            controllerKeybindScroll.layout();
-            controllerKeybindScroll.setScrollY(0);
-        } else {
-            keyboardKeybindsContainer.clearChildren();
-            keyboardKeybindsContainer.add(keybindTable).growX().row();
-            keyboardKeybindsContainer.add().growY();
-
-            keyboardKeybindsContainer.invalidateHierarchy();
-            keyboardKeybindScroll.layout();
-            keyboardKeybindScroll.setScrollY(0);
-        }
-        baseTable.setDebug(DEBUG, true);
-    }
-
 
     @Override
     public void create() {
@@ -172,10 +132,7 @@ public class BetterKeybindMenu extends GameState {
         this.starCamera.near = 0.1F;
         this.starCamera.far = 2500.0F;
 
-        keyboardKeybindsContainer.setName("keyboardKeybindsContainer");
-        controllerKeybindsContainer.setName("controllerKeybindsContainer");
-
-        initCategory();
+        initCategories();
         initKeybinds();
 
         baseTable.clear();
@@ -189,18 +146,19 @@ public class BetterKeybindMenu extends GameState {
 
         keyboardTabButton = new LangButton(Lang.get("keyboard_tab")) {
             public void onClick() {
-                setControllerTab(false);
+                setTab(TabType.keyboard);
             }
         };
 
         controllerTabButton = new LangButton(Lang.get("controller_tab")) {
             public void onClick() {
-                setControllerTab(true);
+                setTab(TabType.controller);
             }
         };
 
-        keyboardTabButton.setTextColor(isControllerTab ? inactiveColor : activeColor);
-        controllerTabButton.setTextColor(isControllerTab ? activeColor : inactiveColor);
+        boolean controllerTabActive = KeybindTabs.activeTab == keybindTabs.controller();
+        keyboardTabButton.setTextColor(controllerTabActive ? inactiveColor : activeColor);
+        controllerTabButton.setTextColor(controllerTabActive ? activeColor : inactiveColor);
 
         header.add(searchBar).minWidth(200).prefWidth(500).height(50).growX();
         header.add(keyboardTabButton).padLeft(5).minWidth(180).prefWidth(250).maxWidth(250).height(50);
@@ -210,6 +168,18 @@ public class BetterKeybindMenu extends GameState {
         baseTable.add(header).growX().top().pad(10);
         baseTable.row();
 
+
+        // INIT //
+        // do better controls checking
+        if (Controls.controllers.size > 0) {
+            setTab(TabType.controller);
+        } else {
+            setTab(TabType.keyboard);
+        }
+
+
+//        selectCategory(KeybindTabs.activeTab.activeCategory());
+
         // categories //
 
         Table content = new Table();
@@ -217,25 +187,18 @@ public class BetterKeybindMenu extends GameState {
 
         Table rightSideContent = new Table();
 
-        keyboardCategoryTable.top();
-        controllerCategoryTable.top();
+        categoryTable.top();
 
-        ScrollPane keyboardCategoryScroll = new ScrollPane(keyboardCategoryTable);
-        ScrollPane controllerCategoryScroll = new ScrollPane(controllerCategoryTable);
+        ScrollPane categoryScroll = new ScrollPane(categoryTable);
 
-        keyboardCategoryTable.defaults().growX().top();
-        controllerCategoryTable.defaults().growX().top();
+        categoryTable.defaults().growX().top();
 
-
-        keyboardCategoryScroll.setFadeScrollBars(false);
-        controllerCategoryScroll.setFadeScrollBars(false);
-        keyboardCategoryScroll.setScrollingDisabled(true, false);
-        controllerCategoryScroll.setScrollingDisabled(true, false);
+        categoryScroll.setFadeScrollBars(false);
+        categoryScroll.setScrollingDisabled(true, false);
 
 
         Stack categoryStack = new Stack();
-        categoryStack.add(keyboardCategoryScroll);
-        categoryStack.add(controllerCategoryScroll);
+        categoryStack.add(categoryScroll);
 
         content.add(categoryStack)
                 .growY()
@@ -247,64 +210,22 @@ public class BetterKeybindMenu extends GameState {
 
         // ///////////// keybinds /////////////////////
 
-        keyboardKeybindScroll = new ScrollPane(keyboardKeybindsContainer);
-        controllerKeybindScroll = new ScrollPane(controllerKeybindsContainer);
+        keybindScroll = new ScrollPane(keybindTable);
 
-        keyboardKeybindScroll.setFadeScrollBars(false);
-        controllerKeybindScroll.setFadeScrollBars(false);
-        keyboardKeybindScroll.setScrollingDisabled(true, false);
-        controllerKeybindScroll.setScrollingDisabled(true, false);
+        keybindScroll.setFadeScrollBars(false);
+        keybindScroll.setScrollingDisabled(true, false);
 
         Stack keybindStack = new Stack();
-        keybindStack.add(keyboardKeybindScroll);
-        keybindStack.add(controllerKeybindScroll);
+        keybindStack.add(keybindScroll);
+
+
 
         rightSideContent.defaults().growX();
         rightSideContent.top();
         rightSideContent.add(keybindStack).growX().top().padTop(10).padRight(10).padBottom(10);
 
-        activeCategoryButton = null;
 
-        for (Category category : categories.values()) {
-            Table keyboardKeybinds = new Table();
-            Table controllerKeybinds = new Table();
-
-            for (KeybindEntry entry : category.keybinds) {
-//                String name = Lang.get(entry.id().toString());
-//                TextField keyboardField = new TextField(name, GameStyles.textstyle);
-//                TextField controllerField = new TextField(name, GameStyles.textstyle);
-
-                KeybindWidget keyboardButton = new KeybindWidget(entry);
-                KeybindWidget controllerButton = new KeybindWidget(entry);
-
-                //TODO make Typed
-                keyboardKeybinds.add(keyboardButton).growX().height(70).padBottom(5).row();
-                controllerKeybinds.add(controllerButton).growX().height(70).padBottom(5).row();
-            }
-
-            CategoryButton keyboardButton = new CategoryButton(category) {
-                @Override public void onClick() {
-                    selectCategory(this, keyboardKeybinds);
-                }
-            };
-
-            CategoryButton controllerButton = new CategoryButton(category) {
-                @Override public void onClick() {
-                    selectCategory(this, controllerKeybinds);
-                }
-            };
-
-            switch (category.getType()) {
-                case keyboard -> keyboardCategoryTable.add(keyboardButton).width(250).height(50).padBottom(5).row();
-                case controller -> controllerCategoryTable.add(controllerButton).width(250).height(50).padBottom(5).row();
-                case both -> {
-                    keyboardCategoryTable.add(keyboardButton).width(250).height(50).padBottom(5).row();
-                    controllerCategoryTable.add(controllerButton).width(250).height(50).padBottom(5).row();
-                }
-            }
-        }
-
-        // bottm buttons /////
+        // bottom buttons /////
         Table bottomButtons = new Table();
 
         LangButton doneButton = new LangButton(Lang.get("done")) {
@@ -335,7 +256,6 @@ public class BetterKeybindMenu extends GameState {
         content.add(rightSideContent).grow();
 
         Gdx.input.setInputProcessor(this.stage);
-        setControllerTab(Controls.controllers.size > 0);
         baseTable.setDebug(DEBUG, true);
     }
 
