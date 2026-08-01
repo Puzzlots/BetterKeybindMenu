@@ -1,5 +1,6 @@
 package com.examplemod.exmod;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -39,6 +40,8 @@ public class KeyAtlas {
         Image image;
 
         int keyCode = key.getValue();
+        if (keyCode >= Input.Keys.MAX_KEYCODE) throw new RuntimeException("keyCode above max");
+
         if (key.isMouseButton()) {
             image = new Image(keysTexture1x1);
             return image;
