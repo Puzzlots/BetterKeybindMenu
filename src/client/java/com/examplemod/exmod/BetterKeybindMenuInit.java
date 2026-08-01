@@ -4,7 +4,7 @@ import dev.puzzleshq.puzzleloader.loader.mod.entrypoint.client.ClientPreModInit;
 import dev.puzzleshq.puzzleloader.loader.util.RawAssetLoader;
 import finalforeach.cosmicreach.util.assets.GameAssetLoaderUtils;
 
-public class BetterKeybindMenu implements ClientPreModInit {
+public class BetterKeybindMenuInit implements ClientPreModInit {
 
     @Override
     public void onClientPreInit() {

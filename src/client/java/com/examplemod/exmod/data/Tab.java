@@ -1,10 +1,10 @@
-package com.examplemod.exmod.menu;
+package com.examplemod.exmod.data;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Tab {
-    List<Category> categories;
+    public List<Category> categories;
     private int activeCategoryIndex;
 
     public Tab(List<Category> categories) {

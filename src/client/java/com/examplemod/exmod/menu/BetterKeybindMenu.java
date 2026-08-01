@@ -1,7 +1,6 @@
 package com.examplemod.exmod.menu;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -12,14 +11,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.examplemod.exmod.KeyAtlas;
-import com.examplemod.exmod.menu.buttons.CategoryButton;
-import com.examplemod.exmod.menu.buttons.LangButton;
+import com.examplemod.exmod.data.Category;
+import com.examplemod.exmod.data.KeybindEntry;
+import com.examplemod.exmod.data.KeybindTabs;
+import com.examplemod.exmod.data.TabType;
+import com.examplemod.exmod.ui.buttons.CategoryButton;
 import com.examplemod.exmod.ui.widgets.KeybindWidget;
 import finalforeach.cosmicreach.gamestates.GameState;
+import finalforeach.cosmicreach.settings.ControlSettings;
 import finalforeach.cosmicreach.settings.Controls;
 import finalforeach.cosmicreach.settings.GraphicsSettings;
 import finalforeach.cosmicreach.settings.Keybind;
 import finalforeach.cosmicreach.ui.GameStyles;
+import finalforeach.cosmicreach.ui.widgets.CRButton;
 import finalforeach.cosmicreach.util.Identifier;
 import finalforeach.cosmicreach.util.lang.Lang;
 import finalforeach.cosmicreach.world.Sky;
@@ -42,8 +46,9 @@ public class BetterKeybindMenu extends GameState {
 
     /// buttons ///
 
-    LangButton keyboardTabButton;
-    LangButton controllerTabButton;
+    CategoryButton activeCategoryButton;
+    CRButton keyboardTabButton;
+    CRButton controllerTabButton;
 
     ScrollPane keybindScroll;
 
@@ -51,13 +56,12 @@ public class BetterKeybindMenu extends GameState {
     Color inactiveColor = Color.WHITE;
 
 
-    public static Category CAT_MOVEMENT = new Category("base", "movement");
-    public static Category CAT_INTERACTIONS = new Category("base", "interactions");
-    public static Category CAT_INVENTORY = new Category("base", "inventory");
-    public static Category CAT_DEBUG = new Category("base", "debug");
-    public static Category CAT_OTHER = new Category("base", "other");
-
-    public static Category test = new Category("BetterKeybindMenu", "other");
+    public Category MOVEMENT = new Category("base", "movement");
+    public Category INTERACTIONS = new Category("base", "interactions");
+    public Category INVENTORY = new Category("base", "inventory");
+    public Category C_DEBUG = new Category("base", "debug");
+    public Category OTHER = new Category("base", "other");
+    public Category test = new Category("BetterKeybindMenu", "other");
 
     public BetterKeybindMenu(GameState previousState) {
         this.previousState = previousState;
@@ -68,18 +72,18 @@ public class BetterKeybindMenu extends GameState {
     }
 
     public void initCategories() {
-        keybindTabs.keyboard().addCategory(CAT_MOVEMENT);
-        keybindTabs.keyboard().addCategory(CAT_INTERACTIONS);
-        keybindTabs.keyboard().addCategory(CAT_INVENTORY);
-        keybindTabs.keyboard().addCategory(CAT_OTHER);
+        keybindTabs.keyboard().addCategory(MOVEMENT);
+        keybindTabs.keyboard().addCategory(INTERACTIONS);
+        keybindTabs.keyboard().addCategory(INVENTORY);
+        keybindTabs.keyboard().addCategory(OTHER);
         keybindTabs.keyboard().addCategory(test);
 
         keybindTabs.controller().addCategory(test);
-        keybindTabs.controller().addCategory(CAT_DEBUG);
+        keybindTabs.controller().addCategory(C_DEBUG);
     }
 
     public void initKeybinds() {
-//        addKeybind(CAT_MOVEMENT, Identifier.of("base", "Forward"), ControlSettings.keyForward);
+        addKeybind(MOVEMENT, Identifier.of("base", "Forward"), ControlSettings.keyForward);
 //
 //        addKeybind(test, Identifier.of("BetterKeybindMenu", "keyForward"), ControlSettings.keyForward);
 //        addKeybind(test, Identifier.of("BetterKeybindMenu", "keyChat"), ControlSettings.keyChat);
@@ -88,9 +92,9 @@ public class BetterKeybindMenu extends GameState {
 //        addKeybind(test, Identifier.of("BetterKeybindMenu", "keyChangePerspective"), ControlSettings.keyChangePerspective);
 
         // this is for testing!!! not recommended for human consumption
-        for (int i = 0; i <= Input.Keys.MAX_KEYCODE; i++) {
-            addKeybind(test, Identifier.of("BetterKeybindMenu", Input.Keys.toString(i)), Keybind.fromDefaultKey(String.valueOf(i), i));
-        }
+//        for (int i = 0; i <= Input.Keys.MAX_KEYCODE; i++) {
+//            addKeybind(test, Identifier.of("BetterKeybindMenu", Input.Keys.toString(i)), Keybind.fromDefaultKey(String.valueOf(i), i));
+//        }
     }
 
     private void setTab(TabType tabType) {
@@ -102,9 +106,10 @@ public class BetterKeybindMenu extends GameState {
         for (Category category : KeybindTabs.activeTab.categories) {
             CategoryButton button = new CategoryButton(category) {
                 @Override public void onClick() {
-                    selectCategory(category);
+                    selectCategory(category, this);
                 }
             };
+            if (category == KeybindTabs.activeTab.activeCategory()) activeCategoryButton = button;
 
             categoryTable.add(button).width(250).height(50).padBottom(5).row();
         }
@@ -112,11 +117,16 @@ public class BetterKeybindMenu extends GameState {
         keyboardTabButton.setTextColor(isControllerTab ? inactiveColor : activeColor);
         controllerTabButton.setTextColor(isControllerTab ? activeColor : inactiveColor);
 
-        selectCategory(KeybindTabs.activeTab.activeCategory());
+        selectCategory(KeybindTabs.activeTab.activeCategory(), activeCategoryButton);
     }
 
-    private void selectCategory(Category category) {
+    private void selectCategory(Category category, CategoryButton newButton) {
         keybindTable.clear();
+
+        if (activeCategoryButton != null) activeCategoryButton.setTextColor(inactiveColor);
+        newButton.setTextColor(activeColor);
+        activeCategoryButton = newButton;
+
         KeybindTabs.activeTab.setActiveCategory(category);
         for (KeybindEntry entry : KeybindTabs.activeTab.activeCategory().keybinds()) {
             KeybindWidget button = new KeybindWidget(entry);
@@ -146,13 +156,13 @@ public class BetterKeybindMenu extends GameState {
         Table header = new Table();
         this.searchBar = new TextField(Lang.get("keybindSelectionSearch"), GameStyles.textstyle);
 
-        keyboardTabButton = new LangButton(Lang.get("keyboard_tab")) {
+        keyboardTabButton = new CRButton(Lang.get("keyboard_tab")) {
             public void onClick() {
                 setTab(TabType.keyboard);
             }
         };
 
-        controllerTabButton = new LangButton(Lang.get("controller_tab")) {
+        controllerTabButton = new CRButton(Lang.get("controller_tab")) {
             public void onClick() {
                 setTab(TabType.controller);
             }
@@ -221,7 +231,7 @@ public class BetterKeybindMenu extends GameState {
         // bottom buttons /////
         Table bottomButtons = new Table();
 
-        LangButton doneButton = new LangButton(Lang.get("done")) {
+        CRButton doneButton = new CRButton(Lang.get("done")) {
             public void onClick() {
                 GameState.switchToGameState(previousState);
             }

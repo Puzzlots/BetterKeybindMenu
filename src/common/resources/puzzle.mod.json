@@ -24,7 +24,7 @@
   ],
 
   "entrypoints": {
-    "client-preInit": "${p_group}.BetterKeybindMenu"
+    "client-preInit": "${p_group}.BetterKeybindMenuInit"
   },
 
   "depends": {

@@ -70,6 +70,9 @@ public class KeyAtlas {
     }
 
     public static void dispose() {
+
+        System.out.println("WE ARE dispose NOW!!!");
+
         if (!initialised.compareAndSet(true, false)) return;
 
         if (keysTexture1x1 != null) {
@@ -91,7 +94,7 @@ public class KeyAtlas {
      * otherwise textures that are disposed are not cleared from cache and cause blank images
      * FINAL YOU MUST ADD THIS!!
      *
-     * Made by very proud crabking
+     * Made by a very proud CrabKing, that this work first try :)
      */
     @SuppressWarnings("unchecked")
     public static void disposeGameTexture(GameTexture gameTexture) {
@@ -112,7 +115,7 @@ public class KeyAtlas {
 
 
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("could not dispose gameTexture");
         }
 
 

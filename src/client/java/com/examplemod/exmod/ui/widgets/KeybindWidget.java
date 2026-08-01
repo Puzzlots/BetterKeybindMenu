@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.examplemod.exmod.KeyAtlas;
-import com.examplemod.exmod.menu.KeybindEntry;
+import com.examplemod.exmod.data.KeybindEntry;
 import finalforeach.cosmicreach.ui.widgets.CRButton;
 import finalforeach.cosmicreach.ui.widgets.CRLabel;
 import finalforeach.cosmicreach.util.lang.Lang;

@@ -1,4 +1,4 @@
-package com.examplemod.exmod.menu;
+package com.examplemod.exmod.data;
 
 import finalforeach.cosmicreach.util.Identifier;
 

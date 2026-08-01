@@ -1,4 +1,4 @@
-package com.examplemod.exmod.menu;
+package com.examplemod.exmod.data;
 
 public enum TabType {
     keyboard,
