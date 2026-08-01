@@ -90,6 +90,8 @@ public class KeyAtlas {
      * Required to properly dispose of GameTextures that are cached,
      * otherwise textures that are disposed are not cleared from cache and cause blank images
      * FINAL YOU MUST ADD THIS!!
+     *
+     * Made by very proud crabking
      */
     @SuppressWarnings("unchecked")
     public static void disposeGameTexture(GameTexture gameTexture) {

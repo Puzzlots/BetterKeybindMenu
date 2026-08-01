@@ -1,8 +1,5 @@
 package com.examplemod.exmod.ui.widgets;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -13,7 +10,6 @@ import com.examplemod.exmod.KeyAtlas;
 import com.examplemod.exmod.menu.KeybindEntry;
 import finalforeach.cosmicreach.ui.widgets.CRButton;
 import finalforeach.cosmicreach.ui.widgets.CRLabel;
-import finalforeach.cosmicreach.util.assets.GameTexture;
 import finalforeach.cosmicreach.util.lang.Lang;
 
 
