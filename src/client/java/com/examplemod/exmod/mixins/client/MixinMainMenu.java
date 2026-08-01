@@ -22,10 +22,10 @@ public class MixinMainMenu extends GameState{
      */
     @Inject(at = @At(value = "TAIL"), method = "create()V")
     public void create(CallbackInfo ci) {
-        if (hasntRun) {
-            GameState.switchToGameState(new BetterKeybindMenu(new MainMenu()));
-            hasntRun = !hasntRun;
-        }
+//        if (hasntRun) {
+//            GameState.switchToGameState(new BetterKeybindMenu(new MainMenu()));
+//            hasntRun = !hasntRun;
+//        }
     }
 
 }

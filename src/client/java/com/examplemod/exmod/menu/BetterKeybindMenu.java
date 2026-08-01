@@ -217,7 +217,7 @@ public class BetterKeybindMenu extends GameState {
         rightSideContent.defaults().growX();
         rightSideContent.top();
         rightSideContent.add(keybindStack).growX().top().padTop(10).padRight(10).padBottom(10);
-        
+
         // bottom buttons /////
         Table bottomButtons = new Table();
 
