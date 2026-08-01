@@ -1,7 +1,7 @@
 package com.examplemod.exmod.data;
 
-import finalforeach.cosmicreach.settings.Keybind;
+import com.examplemod.exmod.ExampleOfNewKeybind;
 import finalforeach.cosmicreach.util.Identifier;
 
-public record KeybindEntry(Identifier id, Keybind keybind) {}
+public record KeybindEntry(Identifier langId, ExampleOfNewKeybind keybind) {}
 

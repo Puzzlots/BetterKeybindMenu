@@ -20,7 +20,7 @@ public class Tab {
     }
 
     public Category activeCategory() {
-        return categories.get(activeCategoryIndex);
+        return !categories.isEmpty() ? categories.get(activeCategoryIndex) : null;
     }
 
     public void setActiveCategoryIndex(int activeCategoryIndex) {

@@ -1,12 +1,13 @@
 {
-  "base:other": "Other",
-  "base:interactions": "Interactions",
   "base:movement": "Movement",
+  "base:interactions": "Interactions",
   "base:inventory": "Inventory",
+  "base:chat": "Chat",
+  "base:other": "Other",
+  "base:debug": "Debug",
+
+  "Categories": "^",
 
   "base:Forward": "Move Forward",
-
-  "keyboard_tab": "Keyboard",
-  "controller_tab": "Controller",
-  "keybindSelectionSearch": "Search Keybinds..."
+  "base:backward": "Move Backward"
 }

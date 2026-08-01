@@ -29,7 +29,6 @@ public class KeyAtlas {
     private static void init() {
         if (initialised.get()) return;
 
-        System.out.println("WE ARE INITIALISING NOW!!!");
         keysTexture1x1 = GameTexture
                 .load("base:textures/ui/keys/keyboard-atlas-flat.png");
 
@@ -43,7 +42,7 @@ public class KeyAtlas {
         initialised.set(true);
     }
 
-    public static Image getImageOfKey(Keybind key) {
+    public static Image getImageOfKey(ExampleOfNewKeybind key) {
         if (!initialised.get()) init();
 
         Image image;
@@ -52,7 +51,7 @@ public class KeyAtlas {
         if (keyCode > Input.Keys.MAX_KEYCODE) throw new RuntimeException("keyCode above max, keycode: "+ keyCode + " maxKeyCode: " + Input.Keys.MAX_KEYCODE);
 
         if (key.isMouseButton()) {
-            image = new Image(keysTexture1x1.get());
+            image = new Image(key1x2Regions[0][0]);
             return image;
         } else if (oneByTwos.contains(keyCode)) {
             TextureRegion textureRegion = key1x2Regions[keyCode / 16][keyCode % 16];
@@ -70,9 +69,6 @@ public class KeyAtlas {
     }
 
     public static void dispose() {
-
-        System.out.println("WE ARE dispose NOW!!!");
-
         if (!initialised.compareAndSet(true, false)) return;
 
         if (keysTexture1x1 != null) {

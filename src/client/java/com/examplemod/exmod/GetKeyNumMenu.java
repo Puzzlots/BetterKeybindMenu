@@ -34,6 +34,21 @@ public class GetKeyNumMenu extends GameState {
                     keyboardField.setText(text);
                     System.out.println(text);
                 }
+
+                if (inputevent.getType() == InputEvent.Type.touchDown) {
+                    int button = inputevent.getButton();
+                    String buttonName = switch (button) {
+                        case Input.Buttons.LEFT -> "LEFT";
+                        case Input.Buttons.RIGHT -> "RIGHT";
+                        case Input.Buttons.MIDDLE -> "MIDDLE";
+                        case Input.Buttons.BACK -> "BACK";
+                        case Input.Buttons.FORWARD -> "FORWARD";
+                        default -> "UNKNOWN";
+                    };
+                    String text = buttonName + ": " + button;
+                    keyboardField.setText(text);
+                    System.out.println(text);
+                }
             }
 
             return false;

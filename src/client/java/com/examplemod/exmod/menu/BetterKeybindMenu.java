@@ -5,11 +5,14 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.examplemod.exmod.BetterKeybindMenuInit;
+import com.examplemod.exmod.ExampleOfNewKeybind;
 import com.examplemod.exmod.KeyAtlas;
 import com.examplemod.exmod.data.Category;
 import com.examplemod.exmod.data.KeybindEntry;
@@ -46,6 +49,7 @@ public class BetterKeybindMenu extends GameState {
 
     /// buttons ///
 
+    public static KeybindWidget activeKeybindWidget;
     CategoryButton activeCategoryButton;
     CRButton keyboardTabButton;
     CRButton controllerTabButton;
@@ -59,37 +63,62 @@ public class BetterKeybindMenu extends GameState {
     public Category MOVEMENT = new Category("base", "movement");
     public Category INTERACTIONS = new Category("base", "interactions");
     public Category INVENTORY = new Category("base", "inventory");
-    public Category C_DEBUG = new Category("base", "debug");
+    public Category CHAT = new Category("base", "chat");
     public Category OTHER = new Category("base", "other");
-    public Category test = new Category("BetterKeybindMenu", "other");
+    public Category C_DEBUG = new Category("base", "debug"); // can be rename to just debug
 
     public BetterKeybindMenu(GameState previousState) {
         this.previousState = previousState;
     }
 
-    public void addKeybind(Category category, Identifier id, Keybind keybind) {
-        category.addKeybind(new KeybindEntry(id, keybind));
+    // for mods and you if you want it :)
+    public void addKeybind(Category category, Identifier LangId, ExampleOfNewKeybind keybind) {
+        category.addKeybind(new KeybindEntry(LangId, keybind));
+    }
+
+    public void addKeybind(Category category, ExampleOfNewKeybind keybind) {
+        category.addKeybind(new KeybindEntry(keybind.getId(), keybind));
     }
 
     public void initCategories() {
         keybindTabs.keyboard().addCategory(MOVEMENT);
         keybindTabs.keyboard().addCategory(INTERACTIONS);
         keybindTabs.keyboard().addCategory(INVENTORY);
+        keybindTabs.keyboard().addCategory(CHAT);
         keybindTabs.keyboard().addCategory(OTHER);
-        keybindTabs.keyboard().addCategory(test);
-
-        keybindTabs.controller().addCategory(test);
-        keybindTabs.controller().addCategory(C_DEBUG);
+        keybindTabs.keyboard().addCategory(C_DEBUG);
     }
 
+    //TODO FFE can you make your keybinds have base in them like a identifier
     public void initKeybinds() {
-        addKeybind(MOVEMENT, Identifier.of("base", "Forward"), ControlSettings.keyForward);
-//
-//        addKeybind(test, Identifier.of("BetterKeybindMenu", "keyForward"), ControlSettings.keyForward);
-//        addKeybind(test, Identifier.of("BetterKeybindMenu", "keyChat"), ControlSettings.keyChat);
-//        addKeybind(test, Identifier.of("BetterKeybindMenu", "keyAttackBreak"), ControlSettings.keyAttackBreak);
-//        addKeybind(test, Identifier.of("BetterKeybindMenu", "keyCrouch"), ControlSettings.keyCrouch);
-//        addKeybind(test, Identifier.of("BetterKeybindMenu", "keyChangePerspective"), ControlSettings.keyChangePerspective);
+        addKeybind(MOVEMENT, BetterKeybindMenuInit.keyForward);
+        addKeybind(MOVEMENT, BetterKeybindMenuInit.keyBackward);
+        addKeybind(MOVEMENT, BetterKeybindMenuInit.keyLeft);
+        addKeybind(MOVEMENT, BetterKeybindMenuInit.keyRight);
+        addKeybind(MOVEMENT, BetterKeybindMenuInit.keyJump);
+        addKeybind(MOVEMENT, BetterKeybindMenuInit.keyCrouch);
+        addKeybind(MOVEMENT, BetterKeybindMenuInit.keySprint);
+        addKeybind(MOVEMENT, BetterKeybindMenuInit.keyProne);
+
+        addKeybind(INTERACTIONS, BetterKeybindMenuInit.keyUsePlace);
+        addKeybind(INTERACTIONS, BetterKeybindMenuInit.keyAttackBreak);
+        addKeybind(INTERACTIONS, BetterKeybindMenuInit.keyPickBlock);
+
+        addKeybind(INVENTORY, BetterKeybindMenuInit.keyInventory);
+        addKeybind(INVENTORY, BetterKeybindMenuInit.keyDropItem);
+        addKeybind(INVENTORY, BetterKeybindMenuInit.keySwapGroupItem);
+
+        addKeybind(CHAT, BetterKeybindMenuInit.keyChat);
+        addKeybind(CHAT, BetterKeybindMenuInit.keyVoice);
+
+        addKeybind(OTHER, BetterKeybindMenuInit.keyHideUI);
+        addKeybind(OTHER, BetterKeybindMenuInit.keyScreenshot);
+        addKeybind(OTHER, BetterKeybindMenuInit.keyChangePerspective);
+        addKeybind(OTHER, BetterKeybindMenuInit.keyFullscreen);
+
+        addKeybind(C_DEBUG, BetterKeybindMenuInit.keyDebugInfo);
+        addKeybind(C_DEBUG, BetterKeybindMenuInit.keyDebugReloadShaders);
+
 
         // this is for testing!!! not recommended for human consumption
 //        for (int i = 0; i <= Input.Keys.MAX_KEYCODE; i++) {
@@ -122,6 +151,7 @@ public class BetterKeybindMenu extends GameState {
 
     private void selectCategory(Category category, CategoryButton newButton) {
         keybindTable.clear();
+        if (category == null) return;
 
         if (activeCategoryButton != null) activeCategoryButton.setTextColor(inactiveColor);
         newButton.setTextColor(activeColor);
@@ -129,8 +159,8 @@ public class BetterKeybindMenu extends GameState {
 
         KeybindTabs.activeTab.setActiveCategory(category);
         for (KeybindEntry entry : KeybindTabs.activeTab.activeCategory().keybinds()) {
-            KeybindWidget button = new KeybindWidget(entry);
-            keybindTable.add(button).growX().height(70).padBottom(5).row();
+            KeybindWidget widget = new KeybindWidget(entry);
+            keybindTable.add(widget).growX().height(70).padBottom(5).row();
         }
 
         baseTable.setDebug(DEBUG, true);
@@ -257,6 +287,41 @@ public class BetterKeybindMenu extends GameState {
                 .padBottom(10);
 
         content.add(rightSideContent).grow();
+
+
+        this.stage.addListener(event -> {
+            if (event instanceof InputEvent inputEvent) {
+                if (activeKeybindWidget != null) {
+                    KeybindEntry keybind = activeKeybindWidget.getKeybindEntry();
+                    activeKeybindWidget.setColor(activeColor);
+                    boolean isSet = false;
+
+                    if (inputEvent.getType() == InputEvent.Type.keyDown) {
+                        int keycode = inputEvent.getKeyCode();
+                        if (keycode != 111) {
+                            keybind.keybind().setValue(keycode);
+                            isSet = true;
+                        } else {
+                            //TODO FFE please make esc unbind the keybinds as we can't do so as it would need you to change internal stuff a bit
+                            isSet = true;
+                        }
+                    } else if (inputEvent.getType() == InputEvent.Type.touchDown) {
+                        int savedButtonCode = -2 - inputEvent.getButton();
+                        keybind.keybind().setValue(savedButtonCode);
+                        isSet = true;
+                    }
+
+                    if (isSet) {
+                        activeKeybindWidget.updateIcon();
+                        activeKeybindWidget.setColor(inactiveColor);
+                        activeKeybindWidget = null;
+
+                    }
+                }
+            }
+
+            return false;
+        });
 
         Gdx.input.setInputProcessor(this.stage);
         baseTable.setDebug(DEBUG, true);

@@ -1,5 +1,6 @@
 package com.examplemod.exmod.mixins.client;
 
+import com.examplemod.exmod.GetKeyNumMenu;
 import com.examplemod.exmod.menu.BetterKeybindMenu;
 import finalforeach.cosmicreach.gamestates.GameState;
 import finalforeach.cosmicreach.gamestates.MainMenu;
@@ -23,7 +24,7 @@ public class MixinMainMenu extends GameState{
     @Inject(at = @At(value = "HEAD"), method = "render")
     public void render(CallbackInfo ci) {
 //        if (betterKeybindMenu$hasntRun) {
-//            GameState.switchToGameState(new BetterKeybindMenu(new MainMenu()));
+//            GameState.switchToGameState(new GetKeyNumMenu());
 //            betterKeybindMenu$hasntRun = !betterKeybindMenu$hasntRun;
 //        }
     }
