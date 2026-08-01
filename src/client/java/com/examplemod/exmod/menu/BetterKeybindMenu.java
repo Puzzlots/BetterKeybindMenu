@@ -1,22 +1,21 @@
 package com.examplemod.exmod.menu;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.examplemod.exmod.KeyAtlas;
 import com.examplemod.exmod.menu.buttons.CategoryButton;
 import com.examplemod.exmod.menu.buttons.LangButton;
 import com.examplemod.exmod.ui.widgets.KeybindWidget;
 import finalforeach.cosmicreach.gamestates.GameState;
-import finalforeach.cosmicreach.gamestates.OptionsMenu;
-import finalforeach.cosmicreach.settings.ControlSettings;
 import finalforeach.cosmicreach.settings.Controls;
 import finalforeach.cosmicreach.settings.GraphicsSettings;
 import finalforeach.cosmicreach.settings.Keybind;
@@ -29,7 +28,7 @@ public class BetterKeybindMenu extends GameState {
 
     private Camera starCamera;
 
-    public final static boolean DEBUG = true;
+    public final static boolean DEBUG = false;
 
     TextField searchBar;
 
@@ -60,6 +59,9 @@ public class BetterKeybindMenu extends GameState {
 
     public static Category test = new Category("BetterKeybindMenu", "other");
 
+    public BetterKeybindMenu(GameState previousState) {
+        this.previousState = previousState;
+    }
 
     public void addKeybind(Category category, Identifier id, Keybind keybind) {
         category.addKeybind(new KeybindEntry(id, keybind));
@@ -77,18 +79,18 @@ public class BetterKeybindMenu extends GameState {
     }
 
     public void initKeybinds() {
-        addKeybind(CAT_MOVEMENT, Identifier.of("base", "Forward"), ControlSettings.keyForward);
-        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
-        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyChat);
-        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyAttackBreak);
-        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyCrouch);
-        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyChangePerspective);
-        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
-        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
-        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
-        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
-        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
-        addKeybind(test, Identifier.of("BetterKeybindMenu", "Forward"), ControlSettings.keyForward);
+//        addKeybind(CAT_MOVEMENT, Identifier.of("base", "Forward"), ControlSettings.keyForward);
+//
+//        addKeybind(test, Identifier.of("BetterKeybindMenu", "keyForward"), ControlSettings.keyForward);
+//        addKeybind(test, Identifier.of("BetterKeybindMenu", "keyChat"), ControlSettings.keyChat);
+//        addKeybind(test, Identifier.of("BetterKeybindMenu", "keyAttackBreak"), ControlSettings.keyAttackBreak);
+//        addKeybind(test, Identifier.of("BetterKeybindMenu", "keyCrouch"), ControlSettings.keyCrouch);
+//        addKeybind(test, Identifier.of("BetterKeybindMenu", "keyChangePerspective"), ControlSettings.keyChangePerspective);
+
+        // this is for testing!!! not recommended for human consumption
+        for (int i = 0; i <= Input.Keys.MAX_KEYCODE; i++) {
+            addKeybind(test, Identifier.of("BetterKeybindMenu", Input.Keys.toString(i)), Keybind.fromDefaultKey(String.valueOf(i), i));
+        }
     }
 
     private void setTab(TabType tabType) {
@@ -171,11 +173,9 @@ public class BetterKeybindMenu extends GameState {
 
         // INIT //
         // do better controls checking
-        if (Controls.controllers.size > 0) {
-            setTab(TabType.controller);
-        } else {
-            setTab(TabType.keyboard);
-        }
+
+            setTab(Controls.controllers.size > 0 ? TabType.controller : TabType.keyboard);
+
 
 
 //        selectCategory(KeybindTabs.activeTab.activeCategory());
@@ -230,7 +230,7 @@ public class BetterKeybindMenu extends GameState {
 
         LangButton doneButton = new LangButton(Lang.get("done")) {
             public void onClick() {
-                GameState.switchToGameState(new OptionsMenu(currentGameState));
+                GameState.switchToGameState(previousState);
             }
         };
 
@@ -267,6 +267,7 @@ public class BetterKeybindMenu extends GameState {
     public void switchAwayTo(GameState gameState) {
         super.switchAwayTo(gameState);
         Gdx.input.setInputProcessor(null);
+        KeyAtlas.dispose();
     }
 
     public void onSwitchTo() {
@@ -276,6 +277,7 @@ public class BetterKeybindMenu extends GameState {
 
     @Override
     public void render() {
+        //noinspection DuplicatedCode
         super.render();
         this.stage.act();
         ScreenUtils.clear(0, 0, 0F, 1.0F, true);

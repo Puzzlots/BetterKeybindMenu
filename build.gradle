@@ -10,6 +10,10 @@ jigsawGame {
     splitSourceSets()
 }
 
+jigsawAccess {
+    addManipulators(file("$projectDir/src/common/resources/${p_id}.manipulator"))
+}
+
 repositories {
     mavenCentral()
     mavenLocal()
@@ -21,6 +25,17 @@ dependencies {
 
     cosmicReach("finalforeach:cosmic-reach:${cosmic_reach_version}")
 
+}
+
+processClientResources {
+    def resourcesFolder = new File("${sourceSets.client.output.resourcesDir}/assets/")
+    def assetsFolder = new File("${sourceSets.client.output.resourcesDir}/assets/")
+    def assetsFile = new File("${sourceSets.client.output.resourcesDir}/", "$p_id-assets.txt")
+    assetsFile.delete()
+
+    fileTree(assetsFolder).collect { resourcesFolder.relativePath(it) }.each {
+        assetsFile.append(it + "\n")
+    }
 }
 
 processCommonResources {

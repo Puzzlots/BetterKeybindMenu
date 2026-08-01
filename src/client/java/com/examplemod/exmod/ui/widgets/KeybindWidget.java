@@ -2,17 +2,20 @@ package com.examplemod.exmod.ui.widgets;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
+import com.examplemod.exmod.KeyAtlas;
 import com.examplemod.exmod.menu.KeybindEntry;
 import finalforeach.cosmicreach.ui.widgets.CRButton;
 import finalforeach.cosmicreach.ui.widgets.CRLabel;
 import finalforeach.cosmicreach.util.assets.GameTexture;
 import finalforeach.cosmicreach.util.lang.Lang;
+
 
 public class KeybindWidget extends Stack {
     CRLabel label;
@@ -23,13 +26,6 @@ public class KeybindWidget extends Stack {
 
     public KeybindWidget(KeybindEntry keybindEntry) {
         this.keybindEntry = keybindEntry;
-        Texture keysTexture = GameTexture
-                .load("base:textures/ui/keys/keyboard-atlas-flat.png")
-                .get();
-
-        TextureRegion[][] keyRegions =
-                TextureRegion.split(keysTexture, 16, 16);
-
 
         this.label = new CRLabel(Lang.get(keybindEntry.id().toString()));
         this.label.setAlignment(Align.center);
@@ -38,12 +34,7 @@ public class KeybindWidget extends Stack {
 
         this.button = new CRButton();
 
-        int keyCode = keybindEntry.keybind().getValue();
-        if (keybindEntry.keybind().isMouseButton()) {
-            this.keyIconImage = new Image(keysTexture);
-        } else {
-            this.keyIconImage = new Image(keyRegions[keyCode % 16][keyCode / 16]);
-        }
+        this.keyIconImage = KeyAtlas.getImageOfKey(keybindEntry.keybind());
 
         this.label.setTouchable(Touchable.disabled);
         this.keyIconImage.setTouchable(Touchable.disabled);
@@ -56,7 +47,10 @@ public class KeybindWidget extends Stack {
 
         overlay.add(this.label).expand().center().fill();
         overlay.add().grow();
-        overlay.add(this.keyIconImage).size(64).expand().center();
+
+
+        overlay.add(this.keyIconImage).size(this.keyIconImage.getWidth() *4, this.keyIconImage.getHeight() *4).expand().center();
+
 
         this.add(overlay);
     }

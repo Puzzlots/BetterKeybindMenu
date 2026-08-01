@@ -23,6 +23,10 @@
     }
   ],
 
+  "entrypoints": {
+    "client-preInit": "${p_group}.BetterKeybindMenu"
+  },
+
   "depends": {
     "cosmic-reach": ">=0.5.7-alpha",
     "puzzle-loader-cosmic": ">=1.5.2-alpha",

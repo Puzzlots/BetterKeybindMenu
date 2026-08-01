@@ -1,4 +1,6 @@
 {
+  "BetterKeybindMenu:other":  "test",
+  "BetterKeybindMenu:Forward": "Move Forward BETTER",
   "base:other": "Other",
   "base:interactions": "Interactions",
   "base:movement": "Movement",
