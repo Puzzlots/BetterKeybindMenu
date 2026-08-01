@@ -174,11 +174,7 @@ public class BetterKeybindMenu extends GameState {
         // INIT //
         // do better controls checking
 
-            setTab(Controls.controllers.size > 0 ? TabType.controller : TabType.keyboard);
-
-
-
-//        selectCategory(KeybindTabs.activeTab.activeCategory());
+        setTab(Controls.controllers.size > 0 ? TabType.controller : TabType.keyboard);
 
         // categories //
 
@@ -211,7 +207,6 @@ public class BetterKeybindMenu extends GameState {
         // ///////////// keybinds /////////////////////
 
         keybindScroll = new ScrollPane(keybindTable);
-
         keybindScroll.setFadeScrollBars(false);
         keybindScroll.setScrollingDisabled(true, false);
 
@@ -219,12 +214,10 @@ public class BetterKeybindMenu extends GameState {
         keybindStack.add(keybindScroll);
 
 
-
         rightSideContent.defaults().growX();
         rightSideContent.top();
         rightSideContent.add(keybindStack).growX().top().padTop(10).padRight(10).padBottom(10);
-
-
+        
         // bottom buttons /////
         Table bottomButtons = new Table();
 
