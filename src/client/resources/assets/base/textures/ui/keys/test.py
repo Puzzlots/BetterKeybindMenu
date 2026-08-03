@@ -1,5 +1,5 @@
-from PIL import Image
 import os
+from PIL import Image
 
 INPUT_IMAGE = "gdb-keyboard-2.png"
 OUTPUT_DIR = "tiles"

@@ -47,25 +47,6 @@
   "Orange_Sky": "Orange Sky",
   "Pitch_Dark": "Pitch Dark",
   "Overcast": "Overcast",
-  "Forward": "Forward",
-  "Backward": "Backward",
-  "Left": "Left",
-  "Right": "Right",
-  "Jump": "Jump",
-  "Crouch": "Crouch",
-  "Sprint": "Sprint",
-  "Prone": "Prone",
-  "Inventory": "Inventory",
-  "Cycle_Item_Type": "Cycle Item Type",
-  "Drop_Item": "Drop Item",
-  "Hide_UI": "Hide UI",
-  "Screenshot": "Screenshot",
-  "Debug_Info": "Debug Info",
-  "Attack_Break": "Attack / Break",
-  "Pick_Block": "Pick Block",
-  "Use_Place": "Use / Place",
-  "Open_Chat": "Open Chat",
-  "Push_To_Talk": "Push-To-Talk",
   "Toggle_Mute": "Toggle Mute",
   "Voice_Mode": "Voice Mode",
   "Voice_Settings": "Voice Settings",
@@ -74,9 +55,6 @@
   "voiceVolume": "Other Players Volume",
   "micVolume": "Microphone Volume",
   "No_Clip": "No-Clip",
-  "Change_Perspective": "Change Perspective",
-  "Reload_Shaders": "Reload Shaders",
-  "Fullscreen": "Fullscreen",
   "Create_New_World": "Create New World",
   "worldNameButton": "World name: ",
   "defaultWorldName": "New World",
@@ -158,12 +136,10 @@
   "fullscreenExclusive": "Exclusive",
   "fullscreenBorderless": "Borderless",
 
-
-
   "new stuff": "yeah",
-
   "keyboard_tab": "Keyboard",
   "controller_tab": "Controller",
   "keybindSelectionSearch": "Search Keybinds...",
-  "keybindsTip": "Press Esc to unbind keys"
+  "keybindsTip": "Press Esc to unbind keys",
+  "KeybindRest": "Rest keybind"
 }

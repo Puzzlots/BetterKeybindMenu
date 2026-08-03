@@ -7,9 +7,8 @@ import finalforeach.cosmicreach.settings.Controls;
 import finalforeach.cosmicreach.util.Identifier;
 import finalforeach.cosmicreach.util.lang.Lang;
 import finalforeach.cosmicreach.util.settings.types.BooleanSetting;
-import finalforeach.cosmicreach.util.settings.types.CharSetting;
 import finalforeach.cosmicreach.util.settings.types.IntSetting;
-import java.lang.Character.UnicodeBlock;
+
 import java.util.HashMap;
 
 public class ExampleOfNewKeybind extends IntSetting {
@@ -23,17 +22,19 @@ public class ExampleOfNewKeybind extends IntSetting {
     Identifier id;
     boolean allowMouse;
     BooleanSetting isUnset;
+    int defaultKey;
 
     private ExampleOfNewKeybind(Identifier id, int defaultValue, boolean allowMouse, boolean isUnset) {
         super(id.getNamespace() + ":" + "keybind_" + id.getName(), defaultValue);
         allKeybinds.put(id, this);
         this.id = id;
         this.allowMouse = allowMouse;
+        this.defaultKey = defaultValue;
         this.isUnset = new BooleanSetting(id.getNamespace() + ":" + "keybind_" + id.getName() + "_unset", isUnset);
     }
 
     public static ExampleOfNewKeybind fromDefaultKey(Identifier id, int defaultKeyValue) {
-        return new ExampleOfNewKeybind(id, defaultKeyValue, true, false);
+        return fromDefaultKey(id, defaultKeyValue, false);
     }
 
     public static ExampleOfNewKeybind fromDefaultKey(Identifier id, int defaultKeyValue, boolean isUnset) {
@@ -41,7 +42,7 @@ public class ExampleOfNewKeybind extends IntSetting {
     }
 
     public static ExampleOfNewKeybind fromDefaultKeyNeverMouse(Identifier id, int defaultKeyValue) {
-        return new ExampleOfNewKeybind(id, defaultKeyValue, false, false);
+        return fromDefaultKeyNeverMouse(id, defaultKeyValue, false);
     }
 
     public static ExampleOfNewKeybind fromDefaultKeyNeverMouse(Identifier id, int defaultKeyValue, boolean isUnset) {
@@ -49,7 +50,7 @@ public class ExampleOfNewKeybind extends IntSetting {
     }
 
     public static ExampleOfNewKeybind fromDefaultMouse(Identifier id, int defaultButtonValue) {
-        return new ExampleOfNewKeybind(id, -2 - defaultButtonValue, true, false);
+        return fromDefaultMouse(id, defaultButtonValue, false);
     }
 
     public static ExampleOfNewKeybind fromDefaultMouse(Identifier id, int defaultButtonValue, boolean isUnset) {
@@ -107,6 +108,9 @@ public class ExampleOfNewKeybind extends IntSetting {
         return this.isUnset;
     }
 
+    public void restKey() {
+        this.setValue(this.defaultKey);
+    }
 
     @Override
     public void setValue(int newValue) {

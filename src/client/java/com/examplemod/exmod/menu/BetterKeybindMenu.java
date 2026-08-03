@@ -1,14 +1,15 @@
 package com.examplemod.exmod.menu;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.examplemod.exmod.BetterKeybindMenuInit;
 import com.examplemod.exmod.ExampleOfNewKeybind;
@@ -19,11 +20,9 @@ import com.examplemod.exmod.data.KeybindTabs;
 import com.examplemod.exmod.data.TabType;
 import com.examplemod.exmod.ui.buttons.CategoryButton;
 import com.examplemod.exmod.ui.widgets.KeybindWidget;
-import finalforeach.cosmicreach.ClientSingletons;
 import finalforeach.cosmicreach.gamestates.GameState;
 import finalforeach.cosmicreach.settings.Controls;
 import finalforeach.cosmicreach.settings.GraphicsSettings;
-import finalforeach.cosmicreach.singletons.GameSingletons;
 import finalforeach.cosmicreach.ui.GameStyles;
 import finalforeach.cosmicreach.ui.widgets.CRButton;
 import finalforeach.cosmicreach.ui.widgets.CRLabel;
@@ -163,7 +162,8 @@ public class BetterKeybindMenu extends GameState {
             keybindTable.add(widget).growX().height(70).padBottom(5).row();
         }
 
-        baseTable.setDebug(DEBUG, true);
+        // need to do this so can set sub widget to debug
+        if (DEBUG) baseTable.setDebug(DEBUG, true);
     }
 
     @Override
@@ -232,14 +232,8 @@ public class BetterKeybindMenu extends GameState {
         categoryScroll.setFadeScrollBars(false);
         categoryScroll.setScrollingDisabled(true, false);
 
-        Image line = new Image(ClientSingletons.whitePixel.get());
-        line.setColor(Color.GRAY);
-        line.setSize(200, 1);
-        line.setPosition(10, 50); // manual x, y — table won't touch this
-
         Stack categoryStack = new Stack();
         categoryStack.add(categoryScroll);
-        categoryStack.addActor(line);
 
         content.add(categoryStack)
                 .growY()
@@ -335,7 +329,8 @@ public class BetterKeybindMenu extends GameState {
         });
 
         Gdx.input.setInputProcessor(this.stage);
-        baseTable.setDebug(DEBUG, true);
+        // need to do this so can set sub widget to debug
+        if (DEBUG) baseTable.setDebug(DEBUG, true);
     }
 
     @Override

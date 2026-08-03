@@ -18,6 +18,8 @@ import finalforeach.cosmicreach.util.lang.Lang;
 public class KeybindWidget extends Stack {
     CRLabel label;
     CRButton button;
+    CRButton restButton;
+
     Image keyIconImage;
     KeybindEntry keybindEntry;
 
@@ -28,7 +30,7 @@ public class KeybindWidget extends Stack {
         this.keybindEntry = keybindEntry;
 
         this.label = new CRLabel(Lang.get(keybindEntry.langId().toString()));
-        this.label.setAlignment(Align.center);
+        this.label.setAlignment(Align.left);
         this.label.setWrap(false);
         this.label.setHeight(70);
         this.label.setTouchable(Touchable.disabled);
@@ -42,21 +44,32 @@ public class KeybindWidget extends Stack {
 
         this.add(this.button);
 
+        this.restButton =  new CRButton(Lang.get("KeybindRest")) {
+            @Override
+            public void onClick() {
+                KeybindWidget.this.keybindEntry.keybind().restKey();
+                updateIcon();
+            }
+        };
+
         overlay = new Table();
         overlay.setFillParent(true);
-        overlay.setTouchable(Touchable.disabled);
 
-        overlay.add(this.label).expand().center().fill();
+        overlay.add(this.label).padLeft(100).expand().center().fill();
         overlay.add().grow();
+
+        Table table = new Table();
+
+        table.add(this.restButton).width(200).height(50).padRight(40).left().expandX();
 
         this.keyIconImage = KeyAtlas.getImageOfKey(keybindEntry.keybind());
         this.keyIconImage.setTouchable(Touchable.disabled);
 
-        this.keyIconImageCell = overlay.add(this.keyIconImage)
+        this.keyIconImageCell = table.add(this.keyIconImage)
                 .size(this.keyIconImage.getWidth() * 4, this.keyIconImage.getHeight() * 4)
-                .expand().center();
+                .expand().center().padRight(30);
 
-
+        this.overlay.add(table).width(400);
         this.add(overlay);
     }
 
