@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.examplemod.exmod.BetterKeybindMenuInit;
+import com.examplemod.exmod.KeyBindRegistry;
 import com.examplemod.exmod.ExampleOfNewKeybind;
 import com.examplemod.exmod.KeyAtlas;
 import com.examplemod.exmod.data.Category;
@@ -90,33 +90,33 @@ public class BetterKeybindMenu extends GameState {
 
     //TODO FFE can you make your keybinds have base in them like a identifier
     public void initKeybinds() {
-        addKeybind(MOVEMENT, BetterKeybindMenuInit.keyForward);
-        addKeybind(MOVEMENT, BetterKeybindMenuInit.keyBackward);
-        addKeybind(MOVEMENT, BetterKeybindMenuInit.keyLeft);
-        addKeybind(MOVEMENT, BetterKeybindMenuInit.keyRight);
-        addKeybind(MOVEMENT, BetterKeybindMenuInit.keyJump);
-        addKeybind(MOVEMENT, BetterKeybindMenuInit.keyCrouch);
-        addKeybind(MOVEMENT, BetterKeybindMenuInit.keySprint);
-        addKeybind(MOVEMENT, BetterKeybindMenuInit.keyProne);
+        addKeybind(MOVEMENT, KeyBindRegistry.keyForward);
+        addKeybind(MOVEMENT, KeyBindRegistry.keyBackward);
+        addKeybind(MOVEMENT, KeyBindRegistry.keyLeft);
+        addKeybind(MOVEMENT, KeyBindRegistry.keyRight);
+        addKeybind(MOVEMENT, KeyBindRegistry.keyJump);
+        addKeybind(MOVEMENT, KeyBindRegistry.keyCrouch);
+        addKeybind(MOVEMENT, KeyBindRegistry.keySprint);
+        addKeybind(MOVEMENT, KeyBindRegistry.keyProne);
 
-        addKeybind(INTERACTIONS, BetterKeybindMenuInit.keyUsePlace);
-        addKeybind(INTERACTIONS, BetterKeybindMenuInit.keyAttackBreak);
-        addKeybind(INTERACTIONS, BetterKeybindMenuInit.keyPickBlock);
+        addKeybind(INTERACTIONS, KeyBindRegistry.keyUsePlace);
+        addKeybind(INTERACTIONS, KeyBindRegistry.keyAttackBreak);
+        addKeybind(INTERACTIONS, KeyBindRegistry.keyPickBlock);
 
-        addKeybind(INVENTORY, BetterKeybindMenuInit.keyInventory);
-        addKeybind(INVENTORY, BetterKeybindMenuInit.keyDropItem);
-        addKeybind(INVENTORY, BetterKeybindMenuInit.keySwapGroupItem);
+        addKeybind(INVENTORY, KeyBindRegistry.keyInventory);
+        addKeybind(INVENTORY, KeyBindRegistry.keyDropItem);
+        addKeybind(INVENTORY, KeyBindRegistry.keySwapGroupItem);
 
-        addKeybind(CHAT, BetterKeybindMenuInit.keyChat);
-        addKeybind(CHAT, BetterKeybindMenuInit.keyVoice);
+        addKeybind(CHAT, KeyBindRegistry.keyChat);
+        addKeybind(CHAT, KeyBindRegistry.keyVoice);
 
-        addKeybind(OTHER, BetterKeybindMenuInit.keyHideUI);
-        addKeybind(OTHER, BetterKeybindMenuInit.keyScreenshot);
-        addKeybind(OTHER, BetterKeybindMenuInit.keyChangePerspective);
-        addKeybind(OTHER, BetterKeybindMenuInit.keyFullscreen);
+        addKeybind(OTHER, KeyBindRegistry.keyHideUI);
+        addKeybind(OTHER, KeyBindRegistry.keyScreenshot);
+        addKeybind(OTHER, KeyBindRegistry.keyChangePerspective);
+        addKeybind(OTHER, KeyBindRegistry.keyFullscreen);
 
-        addKeybind(C_DEBUG, BetterKeybindMenuInit.keyDebugInfo);
-        addKeybind(C_DEBUG, BetterKeybindMenuInit.keyDebugReloadShaders);
+        addKeybind(C_DEBUG, KeyBindRegistry.keyDebugInfo);
+        addKeybind(C_DEBUG, KeyBindRegistry.keyDebugReloadShaders);
 
 
         // this is for testing!!! not recommended for human consumption
