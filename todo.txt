@@ -2,6 +2,8 @@ make Mouse button textures work
 
 make the searchBar work
 
+support key combinations, e.g. CTRL+G or CONTROL_LEFT+ALT_LEFT+FORWARD?
+
 done:
     make esc unset the keybind
     add text at the bottom of the screen that says you can unbind key using esc
