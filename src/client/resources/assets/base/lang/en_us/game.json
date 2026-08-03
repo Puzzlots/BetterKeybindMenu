@@ -164,5 +164,6 @@
 
   "keyboard_tab": "Keyboard",
   "controller_tab": "Controller",
-  "keybindSelectionSearch": "Search Keybinds..."
+  "keybindSelectionSearch": "Search Keybinds...",
+  "keybindsTip": "Press Esc to unbind keys"
 }

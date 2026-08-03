@@ -1,15 +1,14 @@
 package com.examplemod.exmod.menu;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Stack;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.examplemod.exmod.BetterKeybindMenuInit;
 import com.examplemod.exmod.ExampleOfNewKeybind;
@@ -20,13 +19,14 @@ import com.examplemod.exmod.data.KeybindTabs;
 import com.examplemod.exmod.data.TabType;
 import com.examplemod.exmod.ui.buttons.CategoryButton;
 import com.examplemod.exmod.ui.widgets.KeybindWidget;
+import finalforeach.cosmicreach.ClientSingletons;
 import finalforeach.cosmicreach.gamestates.GameState;
-import finalforeach.cosmicreach.settings.ControlSettings;
 import finalforeach.cosmicreach.settings.Controls;
 import finalforeach.cosmicreach.settings.GraphicsSettings;
-import finalforeach.cosmicreach.settings.Keybind;
+import finalforeach.cosmicreach.singletons.GameSingletons;
 import finalforeach.cosmicreach.ui.GameStyles;
 import finalforeach.cosmicreach.ui.widgets.CRButton;
+import finalforeach.cosmicreach.ui.widgets.CRLabel;
 import finalforeach.cosmicreach.util.Identifier;
 import finalforeach.cosmicreach.util.lang.Lang;
 import finalforeach.cosmicreach.world.Sky;
@@ -65,7 +65,7 @@ public class BetterKeybindMenu extends GameState {
     public Category INVENTORY = new Category("base", "inventory");
     public Category CHAT = new Category("base", "chat");
     public Category OTHER = new Category("base", "other");
-    public Category C_DEBUG = new Category("base", "debug"); // can be rename to just debug
+    public Category C_DEBUG = new Category("base", "debug"); // can be renamed to just debug
 
     public BetterKeybindMenu(GameState previousState) {
         this.previousState = previousState;
@@ -232,9 +232,14 @@ public class BetterKeybindMenu extends GameState {
         categoryScroll.setFadeScrollBars(false);
         categoryScroll.setScrollingDisabled(true, false);
 
+        Image line = new Image(ClientSingletons.whitePixel.get());
+        line.setColor(Color.GRAY);
+        line.setSize(200, 1);
+        line.setPosition(10, 50); // manual x, y — table won't touch this
 
         Stack categoryStack = new Stack();
         categoryStack.add(categoryScroll);
+        categoryStack.addActor(line);
 
         content.add(categoryStack)
                 .growY()
@@ -261,19 +266,24 @@ public class BetterKeybindMenu extends GameState {
         // bottom buttons /////
         Table bottomButtons = new Table();
 
-        CRButton doneButton = new CRButton(Lang.get("done")) {
+        CRButton doneButton = new CRButton(Lang.get("doneButton")) {
             public void onClick() {
                 GameState.switchToGameState(previousState);
             }
         };
 
         bottomButtons.defaults().growX();
+
+        CRLabel keybindsTip = new CRLabel(Lang.get("keybindsTip"));
+        bottomButtons.add(keybindsTip)
+                .right()
+                .padLeft(15);
+
         bottomButtons.add(doneButton)
                 .right()
                 .padLeft(5)
                 .width(250)
                 .height(50);
-
 
         rightSideContent.row();
         rightSideContent.add().expandY();
@@ -292,29 +302,30 @@ public class BetterKeybindMenu extends GameState {
         this.stage.addListener(event -> {
             if (event instanceof InputEvent inputEvent) {
                 if (activeKeybindWidget != null) {
-                    KeybindEntry keybind = activeKeybindWidget.getKeybindEntry();
+                    KeybindEntry keybindEntry = activeKeybindWidget.getKeybindEntry();
                     activeKeybindWidget.setColor(activeColor);
-                    boolean isSet = false;
+                    boolean isUpdated = false;
 
                     if (inputEvent.getType() == InputEvent.Type.keyDown) {
                         int keycode = inputEvent.getKeyCode();
                         if (keycode != 111) {
-                            keybind.keybind().setValue(keycode);
-                            isSet = true;
+                            keybindEntry.keybind().setValue(keycode);
+                            isUpdated = true;
                         } else {
-                            //TODO FFE please make esc unbind the keybinds as we can't do so as it would need you to change internal stuff a bit
-                            isSet = true;
+                            keybindEntry.keybind().getKeyUnset().setValue(true);
+                            isUpdated = true;
                         }
-                    } else if (inputEvent.getType() == InputEvent.Type.touchDown) {
+                    } else if (inputEvent.getType() == InputEvent.Type.touchDown && keybindEntry.keybind().mouseAllowed()) {
                         int savedButtonCode = -2 - inputEvent.getButton();
-                        keybind.keybind().setValue(savedButtonCode);
-                        isSet = true;
+                        keybindEntry.keybind().setValue(savedButtonCode);
+                        isUpdated = true;
                     }
 
-                    if (isSet) {
+                    if (isUpdated) {
                         activeKeybindWidget.updateIcon();
                         activeKeybindWidget.setColor(inactiveColor);
                         activeKeybindWidget = null;
+                        return true;
 
                     }
                 }
