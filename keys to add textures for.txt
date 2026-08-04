@@ -1,0 +1,31 @@
+back 4: 4
+call : 5: 5
+end call 6: 6
+# 18: 12 is wrong
+— 03:30
+mute make better some how
+switch charset
+a Button 96
+b Button 97: 61
+bcButton 98: 62
+x Button 99: 63
+y Button 100: 64
+z Button 101: 65
+L1 Button 102: 66
+R1 Button 103: 67
+— 03:37
+L1 Button 104: 68
+R2 Button 105: 69
+Left Thumb 106: 6a
+Right Thumb 107: 6b
+Start 108: 6c
+Select 109: 6d
+Button mode 110: 6e
+add n to numpad nums
+* num 155:9b
+- num 156:9c
+— 03:45
+add n to numpad +
+add n to numpad .
+Num (: 162: a2
+Num ): 163: a3

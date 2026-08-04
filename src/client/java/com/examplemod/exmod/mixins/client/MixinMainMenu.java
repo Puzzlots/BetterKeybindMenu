@@ -1,5 +1,6 @@
 package com.examplemod.exmod.mixins.client;
 
+import com.examplemod.exmod.GetKeyNumMenu;
 import finalforeach.cosmicreach.gamestates.GameState;
 import finalforeach.cosmicreach.gamestates.MainMenu;
 import org.spongepowered.asm.mixin.Mixin;

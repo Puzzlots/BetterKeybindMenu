@@ -42,7 +42,7 @@ public class KeyAtlas {
 
         key1x1Regions = TextureRegion.split(keysTexture1x1.get(), 16, 16);
 
-        key1x2Regions = TextureRegion.split(keysTexture1x2.get(), 32, 16);
+        key1x2Regions = TextureRegion.split(keysTexture1x2.get(), 24, 16);
 
         mouse1x2Regions = TextureRegion.split(mouseTexture1x1.get(), 16, 16);
 
@@ -72,7 +72,29 @@ public class KeyAtlas {
             TextureRegion textureRegion = key1x2Regions[keyCode / 16][keyCode % 16];
             if (textureRegion == null) throw new RuntimeException("keyCode image null");
             image = new Image(textureRegion);
-            image.setSize(32,16);
+            image.setSize(24,16);
+            return image;
+        } else {
+            TextureRegion textureRegion = key1x1Regions[keyCode / 16][keyCode % 16];
+            if (textureRegion == null) throw new RuntimeException("keyCode image null");
+            image = new Image(textureRegion);
+            image.setSize(16, 16);
+            return image;
+        }
+    }
+
+
+    public static Image getImageOfKey(int keyCode) {
+        if (!initialised.get()) init();
+
+        Image image;
+
+        if (keyCode > Input.Keys.MAX_KEYCODE) throw new RuntimeException("keyCode above max, keycode: "+ keyCode + " maxKeyCode: " + Input.Keys.MAX_KEYCODE);
+        if (oneByTwos.contains(keyCode)) {
+            TextureRegion textureRegion = key1x2Regions[keyCode / 16][keyCode % 16];
+            if (textureRegion == null) throw new RuntimeException("keyCode image null");
+            image = new Image(textureRegion);
+            image.setSize(24,16);
             return image;
         } else {
             TextureRegion textureRegion = key1x1Regions[keyCode / 16][keyCode % 16];
