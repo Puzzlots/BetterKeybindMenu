@@ -7,7 +7,7 @@ mute make better some how
 switch charset
 a Button 96
 b Button 97: 61
-bcButton 98: 62
+c Button 98: 62
 x Button 99: 63
 y Button 100: 64
 z Button 101: 65

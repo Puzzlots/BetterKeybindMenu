@@ -24,7 +24,6 @@ dependencies {
     puzzleLoader "dev.puzzleshq:puzzle-loader-cosmic:$puzzle_loader_cosmic_version"
 
     cosmicReach("finalforeach:cosmic-reach:${cosmic_reach_version}")
-
 }
 
 processClientResources {

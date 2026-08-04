@@ -61,7 +61,7 @@ public class KeybindWidget extends Stack {
         Table table = new Table();
 
         table.add(this.restButton).width(200).height(50).padRight(40).left().expandX();
-        this.restButton.setVisible(!this.keybindEntry.keybind().isDefaultKey());
+        this.restButton.setVisible(!this.keybindEntry.keybind().isDefaultKey() || this.keybindEntry.keybind().isKeyUnset());
 
         this.keyIconImage = KeyAtlas.getImageOfKey(keybindEntry.keybind());
         this.keyIconImage.setTouchable(Touchable.disabled);
@@ -88,7 +88,7 @@ public class KeybindWidget extends Stack {
         this.keyIconImage.setSize(newWidth, newHeight);
         this.keyIconImageCell.size(newWidth, newHeight);
 
-        this.restButton.setVisible(!this.keybindEntry.keybind().isDefaultKey());
+        this.restButton.setVisible(!this.keybindEntry.keybind().isDefaultKey() || this.keybindEntry.keybind().isKeyUnset());
 
         overlay.invalidate();
     }
