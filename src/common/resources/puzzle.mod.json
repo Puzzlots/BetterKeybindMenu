@@ -5,7 +5,7 @@
   "version": "${p_version}",
   "description": "${p_desc}",
   "authors": [
-    "${p_authors}"
+    ${p_authors}
   ],
   "can-load-on": {
     "client": true,

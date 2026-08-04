@@ -112,6 +112,10 @@ public class ExampleOfNewKeybind extends IntSetting {
         this.setValue(this.defaultKey);
     }
 
+    public boolean isDefaultKey(){
+        return this.getValue() == this.defaultKey;
+    }
+
     @Override
     public void setValue(int newValue) {
         super.setValue(newValue);
