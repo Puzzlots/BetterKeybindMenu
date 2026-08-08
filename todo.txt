@@ -2,6 +2,8 @@ make Controller button textures work
 
 make the searchBar work
 
+make the searchbar do search like this :key :name :id
+
 support key combinations, e.g. CTRL+G or CONTROL_LEFT+ALT_LEFT+FORWARD?
 
 done:

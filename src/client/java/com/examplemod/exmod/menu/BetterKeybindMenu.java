@@ -30,6 +30,9 @@ import finalforeach.cosmicreach.util.Identifier;
 import finalforeach.cosmicreach.util.lang.Lang;
 import finalforeach.cosmicreach.world.Sky;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class BetterKeybindMenu extends GameState {
 
     private Camera starCamera;
@@ -44,12 +47,13 @@ public class BetterKeybindMenu extends GameState {
     Table baseTable = new Table();
     Table categoryTable = new Table();
     Table keybindTable = new Table();
-//    Table keybindsContainer = new Table();
 
     /// buttons ///
 
     public static KeybindWidget activeKeybindWidget;
     CategoryButton activeCategoryButton;
+    CategoryButton firstCategoryButton;
+
     CRButton keyboardTabButton;
     CRButton controllerTabButton;
 
@@ -128,16 +132,18 @@ public class BetterKeybindMenu extends GameState {
     private void setTab(TabType tabType) {
         boolean isControllerTab = tabType == TabType.controller;
         KeybindTabs.activeTab = isControllerTab ? keybindTabs.controller() : keybindTabs.keyboard();
-        KeybindTabs.activeTab.setActiveCategoryIndex(0);
+        KeybindTabs.activeTab.setActiveCategoryIndex(1);
 
         categoryTable.clear();
         for (Category category : KeybindTabs.activeTab.categories) {
+            if (category.isSearchCategory()) continue;
             CategoryButton button = new CategoryButton(category) {
                 @Override public void onClick() {
                     selectCategory(category, this);
                 }
             };
             if (category == KeybindTabs.activeTab.activeCategory()) activeCategoryButton = button;
+            if (KeybindTabs.activeTab.categories.get(1) == category) firstCategoryButton = button;
 
             categoryTable.add(button).width(250).height(50).padBottom(5).row();
         }
@@ -148,22 +154,41 @@ public class BetterKeybindMenu extends GameState {
         selectCategory(KeybindTabs.activeTab.activeCategory(), activeCategoryButton);
     }
 
-    private void selectCategory(Category category, CategoryButton newButton) {
+    private void selectCategory(@Nonnull Category category, @Nullable CategoryButton newButton) {
         keybindTable.clear();
-        if (category == null) return;
 
         if (activeCategoryButton != null) activeCategoryButton.setTextColor(inactiveColor);
-        newButton.setTextColor(activeColor);
+        if (newButton != null) newButton.setTextColor(activeColor);
         activeCategoryButton = newButton;
 
         KeybindTabs.activeTab.setActiveCategory(category);
-        for (KeybindEntry entry : KeybindTabs.activeTab.activeCategory().keybinds()) {
-            KeybindWidget widget = new KeybindWidget(entry);
-            keybindTable.add(widget).growX().height(70).padBottom(5).row();
+
+        if (category.isSearchCategory()) {
+            for (Category c : KeybindTabs.activeTab.categories) {
+                if (c.isSearchCategory()) continue;
+                for (KeybindEntry entry : c.keybinds()) {
+                    KeybindWidget widget = new KeybindWidget(entry);
+                    keybindTable.add(widget).growX().height(70).padBottom(5).row();
+                }
+            }
+        } else {
+            for (KeybindEntry entry : KeybindTabs.activeTab.activeCategory().keybinds()) {
+                KeybindWidget widget = new KeybindWidget(entry);
+                keybindTable.add(widget).growX().height(70).padBottom(5).row();
+            }
         }
 
         // need to do this so can set sub widget to debug
         if (DEBUG) baseTable.setDebug(DEBUG, true);
+    }
+
+    private void selectSearchCategory() {
+        selectCategory(KeybindTabs.activeTab.categories.getFirst(), null);
+    }
+
+    private void unselectSearchCategory() {
+        KeybindTabs.activeTab.setActiveCategoryIndex(1);
+        selectCategory(KeybindTabs.activeTab.activeCategory(), firstCategoryButton);
     }
 
     @Override
@@ -184,7 +209,33 @@ public class BetterKeybindMenu extends GameState {
         // header //////////
 
         Table header = new Table();
-        this.searchBar = new TextField(Lang.get("keybindSelectionSearch"), GameStyles.textstyle);
+        this.searchBar = new TextField("", GameStyles.textstyle);
+        this.searchBar.setMessageText(Lang.get("keybindSelectionSearch"));
+
+//        this.searchBar.addListener((event) -> {
+//            if (event instanceof InputEvent inputEvent) {
+//                switch (inputEvent.getType()) {
+//                    case keyTyped:
+//                        this.stage.setKeyboardFocus(this.searchBar);
+//                        selectSearchCategory();
+//                        break;
+//                    case enter:
+//                        System.out.println("enter");
+//
+//                        break;
+//                    case exit:
+//                        System.out.println("exit");
+//                        break;
+//                    case keyUp:
+//                        if (inputEvent.getKeyCode() == 111 || inputEvent.getKeyCode() == 66 && this.stage.getKeyboardFocus() == this.searchBar) {
+//                            this.stage.setKeyboardFocus((Actor)null);
+//                        }
+//                        break;
+//                }
+//            }
+//
+//            return false;
+//        });
 
         keyboardTabButton = new CRButton(Lang.get("keyboard_tab")) {
             public void onClick() {
@@ -351,7 +402,6 @@ public class BetterKeybindMenu extends GameState {
 
     @Override
     public void render() {
-        //noinspection DuplicatedCode
         super.render();
         this.stage.act();
         ScreenUtils.clear(0, 0, 0F, 1.0F, true);

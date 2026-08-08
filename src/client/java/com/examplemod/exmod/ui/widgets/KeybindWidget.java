@@ -32,7 +32,6 @@ public class KeybindWidget extends Stack {
         this.label = new CRLabel(Lang.get(keybindEntry.langId().toString()));
         this.label.setAlignment(Align.left);
         this.label.setWrap(false);
-        this.label.setHeight(70);
         this.label.setTouchable(Touchable.disabled);
 
         this.button = new CRButton() {

@@ -13,6 +13,7 @@ public class Tab {
 
     public Tab() {
         this.categories = new ArrayList<>();
+        this.categories.add(new Category(true)); // is a fake category for the search bar
     }
 
     public void addCategory(Category category) {
@@ -20,7 +21,7 @@ public class Tab {
     }
 
     public Category activeCategory() {
-        return !categories.isEmpty() ? categories.get(activeCategoryIndex) : null;
+        return !(categories.size() <= 1) ? categories.get(activeCategoryIndex) : null;
     }
 
     public void setActiveCategoryIndex(int activeCategoryIndex) {
