@@ -1,4 +1,5 @@
 {
+  "base:all": "All",
   "base:movement": "Movement",
   "base:interactions": "Interactions",
   "base:inventory": "Inventory",

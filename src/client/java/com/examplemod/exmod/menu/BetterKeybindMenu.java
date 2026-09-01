@@ -30,6 +30,8 @@ import finalforeach.cosmicreach.util.Identifier;
 import finalforeach.cosmicreach.util.lang.Lang;
 import finalforeach.cosmicreach.world.Sky;
 
+import java.util.List;
+
 public class BetterKeybindMenu extends GameState {
 
     private Camera starCamera;
@@ -59,12 +61,13 @@ public class BetterKeybindMenu extends GameState {
     Color inactiveColor = Color.WHITE;
 
 
-    public Category MOVEMENT = new Category("base", "movement");
-    public Category INTERACTIONS = new Category("base", "interactions");
-    public Category INVENTORY = new Category("base", "inventory");
-    public Category CHAT = new Category("base", "chat");
-    public Category OTHER = new Category("base", "other");
-    public Category C_DEBUG = new Category("base", "debug"); // can be renamed to just debug
+    public final Category ALL = new Category("base", "all");
+    public final Category MOVEMENT = new Category("base", "movement");
+    public final Category INTERACTIONS = new Category("base", "interactions");
+    public final Category INVENTORY = new Category("base", "inventory");
+    public final Category CHAT = new Category("base", "chat");
+    public final Category OTHER = new Category("base", "other");
+    public final Category C_DEBUG = new Category("base", "debug"); // can be renamed to just debug
 
     public BetterKeybindMenu(GameState previousState) {
         this.previousState = previousState;
@@ -72,14 +75,19 @@ public class BetterKeybindMenu extends GameState {
 
     // for mods and you if you want it :)
     public void addKeybind(Category category, Identifier LangId, ExampleOfNewKeybind keybind) {
-        category.addKeybind(new KeybindEntry(LangId, keybind));
+        KeybindEntry keybindEntry = new KeybindEntry(LangId, keybind);
+        category.addKeybind(keybindEntry);
+        ALL.addKeybind(keybindEntry);
     }
 
     public void addKeybind(Category category, ExampleOfNewKeybind keybind) {
-        category.addKeybind(new KeybindEntry(keybind.getId(), keybind));
+        KeybindEntry keybindEntry = new KeybindEntry(keybind.getId(), keybind);
+        category.addKeybind(keybindEntry);
+        ALL.addKeybind(keybindEntry);
     }
 
     public void initCategories() {
+        keybindTabs.keyboard().addCategory(ALL);
         keybindTabs.keyboard().addCategory(MOVEMENT);
         keybindTabs.keyboard().addCategory(INTERACTIONS);
         keybindTabs.keyboard().addCategory(INVENTORY);
@@ -157,7 +165,19 @@ public class BetterKeybindMenu extends GameState {
         activeCategoryButton = newButton;
 
         KeybindTabs.activeTab.setActiveCategory(category);
-        for (KeybindEntry entry : KeybindTabs.activeTab.activeCategory().keybinds()) {
+        List<KeybindEntry> filteredKeybinds = KeybindTabs.activeTab.activeCategory().keybinds().stream().filter(keybindEntry -> {
+            String sanitisedText = searchBar.getText().toLowerCase().strip();
+            if (searchBar.getText().contains(":key")) {
+                String key = sanitisedText.replace(" ", "").replace(":key", "");
+                String setKey = keybindEntry.keybind().getKeyName().replace(" ", "").toLowerCase().strip();
+                if (setKey.equals(key)){
+                    return true;
+                }
+            }
+
+            return (Lang.get(keybindEntry.langId().toString()).toLowerCase().contains(sanitisedText) || keybindEntry.langId().toString().toLowerCase().contains(sanitisedText));
+        }).toList();
+        for (KeybindEntry entry : filteredKeybinds) {
             KeybindWidget widget = new KeybindWidget(entry);
             keybindTable.add(widget).growX().height(70).padBottom(5).row();
         }
@@ -184,7 +204,11 @@ public class BetterKeybindMenu extends GameState {
         // header //////////
 
         Table header = new Table();
-        this.searchBar = new TextField(Lang.get("keybindSelectionSearch"), GameStyles.textstyle);
+        this.searchBar = new TextField("", GameStyles.textstyle);
+        this.searchBar.setMessageText(Lang.get("keybindSelectionSearch"));
+
+        this.searchBar.setTextFieldListener((_, _) ->
+                selectCategory(KeybindTabs.activeTab.activeCategory(), activeCategoryButton));
 
         keyboardTabButton = new CRButton(Lang.get("keyboard_tab")) {
             public void onClick() {
