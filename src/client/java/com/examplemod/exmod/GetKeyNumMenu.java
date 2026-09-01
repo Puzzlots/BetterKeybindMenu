@@ -20,6 +20,7 @@ public class GetKeyNumMenu extends GameState {
     Cell<Image> keyIconImageCell;
     Image keyIconImage;
     CRButton button;
+    CRButton button2;
 
     int keyCode = 0;
     Table table;
@@ -54,7 +55,25 @@ public class GetKeyNumMenu extends GameState {
                 updateIcon();
             }
         };
+
+        button2 = new CRButton("down keycode") {
+            @Override
+            public void onClick() {
+                super.onClick();
+                if (keyCode > 0){
+                    --keyCode;
+                } else {
+                    keyCode = 0;
+                }
+                String keyString = Input.Keys.toString(keyCode);
+                String text = keyString + ": " + keyCode + ": " + Integer.toHexString(keyCode);
+                keyCodeField.setText(text);
+                System.out.println(text);
+                updateIcon();
+            }
+        };
         table.add(button).size(200, 50).padRight(30);
+        table.add(button2).size(200, 50).padRight(30);
 
         keyIconImage = KeyAtlas.getImageOfKey(keyCode);
 
