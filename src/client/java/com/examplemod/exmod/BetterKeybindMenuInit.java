@@ -2,7 +2,6 @@ package com.examplemod.exmod;
 
 import dev.puzzleshq.puzzleloader.loader.mod.entrypoint.client.ClientPreModInit;
 import dev.puzzleshq.puzzleloader.loader.util.RawAssetLoader;
-import finalforeach.cosmicreach.util.Identifier;
 import finalforeach.cosmicreach.util.assets.GameAssetLoaderUtils;
 
 public class BetterKeybindMenuInit implements ClientPreModInit {

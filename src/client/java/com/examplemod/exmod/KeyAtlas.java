@@ -54,7 +54,7 @@ public class KeyAtlas {
         initialised.set(true);
     }
 
-    public static Image getImageOfKey(ExampleOfNewKeybind key) {
+    public static Image getImageOfKey(Keybind key) {
         if (!initialised.get()) init();
 
         Image image;

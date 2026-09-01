@@ -11,9 +11,9 @@ import finalforeach.cosmicreach.util.settings.types.IntSetting;
 
 import java.util.HashMap;
 
-public class ExampleOfNewKeybind extends IntSetting {
-    public static HashMap<Identifier, ExampleOfNewKeybind> allKeybinds = new HashMap<>();
-    public static final ExampleOfNewKeybind MISSINGKEYBIND = new ExampleOfNewKeybind(Identifier.of("base:MISSINGKEYBIND"), -1, true, true) {
+public class Keybind extends IntSetting {
+    public static HashMap<Identifier, Keybind> allKeybinds = new HashMap<>();
+    public static final Keybind MISSINGKEYBIND = new Keybind(Identifier.of("base:MISSINGKEYBIND"), -1, true, true) {
         @Override
         public String getKeyName() {
             return "MISSINGKEYBIND";
@@ -24,7 +24,7 @@ public class ExampleOfNewKeybind extends IntSetting {
     BooleanSetting isUnset;
     int defaultKey;
 
-    private ExampleOfNewKeybind(Identifier id, int defaultValue, boolean allowMouse, boolean isUnset) {
+    private Keybind(Identifier id, int defaultValue, boolean allowMouse, boolean isUnset) {
         super(id.getNamespace() + ":" + "keybind_" + id.getName(), defaultValue);
         allKeybinds.put(id, this);
         this.id = id;
@@ -33,28 +33,28 @@ public class ExampleOfNewKeybind extends IntSetting {
         this.isUnset = new BooleanSetting(id.getNamespace() + ":" + "keybind_" + id.getName() + "_unset", isUnset);
     }
 
-    public static ExampleOfNewKeybind fromDefaultKey(Identifier id, int defaultKeyValue) {
+    public static Keybind fromDefaultKey(Identifier id, int defaultKeyValue) {
         return fromDefaultKey(id, defaultKeyValue, false);
     }
 
-    public static ExampleOfNewKeybind fromDefaultKey(Identifier id, int defaultKeyValue, boolean isUnset) {
-        return new ExampleOfNewKeybind(id, defaultKeyValue, true, isUnset);
+    public static Keybind fromDefaultKey(Identifier id, int defaultKeyValue, boolean isUnset) {
+        return new Keybind(id, defaultKeyValue, true, isUnset);
     }
 
-    public static ExampleOfNewKeybind fromDefaultKeyNeverMouse(Identifier id, int defaultKeyValue) {
+    public static Keybind fromDefaultKeyNeverMouse(Identifier id, int defaultKeyValue) {
         return fromDefaultKeyNeverMouse(id, defaultKeyValue, false);
     }
 
-    public static ExampleOfNewKeybind fromDefaultKeyNeverMouse(Identifier id, int defaultKeyValue, boolean isUnset) {
-        return new ExampleOfNewKeybind(id, defaultKeyValue, false, isUnset);
+    public static Keybind fromDefaultKeyNeverMouse(Identifier id, int defaultKeyValue, boolean isUnset) {
+        return new Keybind(id, defaultKeyValue, false, isUnset);
     }
 
-    public static ExampleOfNewKeybind fromDefaultMouse(Identifier id, int defaultButtonValue) {
+    public static Keybind fromDefaultMouse(Identifier id, int defaultButtonValue) {
         return fromDefaultMouse(id, defaultButtonValue, false);
     }
 
-    public static ExampleOfNewKeybind fromDefaultMouse(Identifier id, int defaultButtonValue, boolean isUnset) {
-        return new ExampleOfNewKeybind(id, -2 - defaultButtonValue, true, isUnset);
+    public static Keybind fromDefaultMouse(Identifier id, int defaultButtonValue, boolean isUnset) {
+        return new Keybind(id, -2 - defaultButtonValue, true, isUnset);
     }
 
     public Identifier getId(){

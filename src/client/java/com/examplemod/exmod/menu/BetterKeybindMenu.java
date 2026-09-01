@@ -11,9 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.examplemod.exmod.KeyBindRegistry;
-import com.examplemod.exmod.ExampleOfNewKeybind;
+import com.examplemod.exmod.Keybind;
 import com.examplemod.exmod.KeyAtlas;
+import com.examplemod.exmod.KeyBindRegistry;
 import com.examplemod.exmod.data.Category;
 import com.examplemod.exmod.data.KeybindEntry;
 import com.examplemod.exmod.data.KeybindTabs;
@@ -35,8 +35,6 @@ import java.util.List;
 public class BetterKeybindMenu extends GameState {
 
     private Camera starCamera;
-
-    public final static boolean DEBUG = false;
 
     TextField searchBar;
 
@@ -67,20 +65,20 @@ public class BetterKeybindMenu extends GameState {
     public final Category INVENTORY = new Category("base", "inventory");
     public final Category CHAT = new Category("base", "chat");
     public final Category OTHER = new Category("base", "other");
-    public final Category C_DEBUG = new Category("base", "debug"); // can be renamed to just debug
+    public final Category DEBUG = new Category("base", "debug");
 
     public BetterKeybindMenu(GameState previousState) {
         this.previousState = previousState;
     }
 
     // for mods and you if you want it :)
-    public void addKeybind(Category category, Identifier LangId, ExampleOfNewKeybind keybind) {
+    public void addKeybind(Category category, Identifier LangId, Keybind keybind) {
         KeybindEntry keybindEntry = new KeybindEntry(LangId, keybind);
         category.addKeybind(keybindEntry);
         ALL.addKeybind(keybindEntry);
     }
 
-    public void addKeybind(Category category, ExampleOfNewKeybind keybind) {
+    public void addKeybind(Category category, Keybind keybind) {
         KeybindEntry keybindEntry = new KeybindEntry(keybind.getId(), keybind);
         category.addKeybind(keybindEntry);
         ALL.addKeybind(keybindEntry);
@@ -93,7 +91,7 @@ public class BetterKeybindMenu extends GameState {
         keybindTabs.keyboard().addCategory(INVENTORY);
         keybindTabs.keyboard().addCategory(CHAT);
         keybindTabs.keyboard().addCategory(OTHER);
-        keybindTabs.keyboard().addCategory(C_DEBUG);
+        keybindTabs.keyboard().addCategory(DEBUG);
     }
 
     //TODO FFE can you make your keybinds have base in them like a identifier
@@ -123,14 +121,9 @@ public class BetterKeybindMenu extends GameState {
         addKeybind(OTHER, KeyBindRegistry.keyChangePerspective);
         addKeybind(OTHER, KeyBindRegistry.keyFullscreen);
 
-        addKeybind(C_DEBUG, KeyBindRegistry.keyDebugInfo);
-        addKeybind(C_DEBUG, KeyBindRegistry.keyDebugReloadShaders);
+        addKeybind(DEBUG, KeyBindRegistry.keyDebugInfo);
+        addKeybind(DEBUG, KeyBindRegistry.keyDebugReloadShaders);
 
-
-        // this is for testing!!! not recommended for human consumption
-//        for (int i = 0; i <= Input.Keys.MAX_KEYCODE; i++) {
-//            addKeybind(test, Identifier.of("BetterKeybindMenu", Input.Keys.toString(i)), Keybind.fromDefaultKey(String.valueOf(i), i));
-//        }
     }
 
     private void setTab(TabType tabType) {
@@ -181,9 +174,6 @@ public class BetterKeybindMenu extends GameState {
             KeybindWidget widget = new KeybindWidget(entry);
             keybindTable.add(widget).growX().height(70).padBottom(5).row();
         }
-
-        // need to do this so can set sub widget to debug
-        if (DEBUG) baseTable.setDebug(DEBUG, true);
     }
 
     @Override
@@ -236,7 +226,6 @@ public class BetterKeybindMenu extends GameState {
 
 
         // INIT //
-        // do better controls checking
 
         setTab(Controls.controllers.size > 0 ? TabType.controller : TabType.keyboard);
 
@@ -316,7 +305,6 @@ public class BetterKeybindMenu extends GameState {
 
         content.add(rightSideContent).grow();
 
-
         this.stage.addListener(event -> {
             if (event instanceof InputEvent inputEvent) {
                 if (activeKeybindWidget != null) {
@@ -353,8 +341,6 @@ public class BetterKeybindMenu extends GameState {
         });
 
         Gdx.input.setInputProcessor(this.stage);
-        // need to do this so can set sub widget to debug
-        if (DEBUG) baseTable.setDebug(DEBUG, true);
     }
 
     @Override
@@ -375,7 +361,6 @@ public class BetterKeybindMenu extends GameState {
 
     @Override
     public void render() {
-        //noinspection DuplicatedCode
         super.render();
         this.stage.act();
         ScreenUtils.clear(0, 0, 0F, 1.0F, true);

@@ -1,12 +1,10 @@
-make Controller button textures work
+make Controller button textures work // not doing until ffe adds better support
 
-make the searchBar work
-
-make the searchbar do search like this :key :name :id
-
-support key combinations, e.g. CTRL+G or CONTROL_LEFT+ALT_LEFT+FORWARD?
+support key combinations, e.g. CTRL+G or CONTROL_LEFT+ALT_LEFT+FORWARD? // ffe can do it if he wants it :)
 
 done:
+    make the searchBar work
+    make the searchbar do search like this :key :name :id
     make esc unset the keybind
     add text at the bottom of the screen that says you can unbind key using esc
     make a reset button
